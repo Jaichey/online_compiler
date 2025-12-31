@@ -1,0 +1,57 @@
+{
+  "buildCommand": "echo 'No build required'",
+  "outputDirectory": ".",
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/user-login.html"
+    },
+    {
+      "source": "/compiler",
+      "destination": "/compiler.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/user-dashboard.html"
+    },
+    {
+      "source": "/profile",
+      "destination": "/user-profile.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin-dashboard.html"
+    },
+    {
+      "source": "/admin-login",
+      "destination": "/admin-login.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/user-login.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
+      ]
+    }
+  ]
+}

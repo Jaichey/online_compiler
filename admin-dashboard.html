@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Bhavishyath</title>
+  <link rel="icon" href="bhavishyath_logo.png" type="image/png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #0d1117;
+      color: #c9d1d9;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    .admin-header {
+      background: linear-gradient(135deg, #0e639c 0%, #1177bb 100%);
+      padding: 1.5rem 2rem;
+      box-shadow: 0 2px 12px rgba(14, 99, 156, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .admin-badge {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .logout-btn {
+      background-color: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 0.6rem 1.25rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logout-btn:hover {
+      background-color: rgba(255, 0, 0, 0.2);
+      border-color: rgba(255, 0, 0, 0.4);
+      transform: translateY(-2px);
+    }
+
+    /* Main Container */
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Navigation Tabs */
+    .admin-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #30363d;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      color: #858585;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-bottom: 3px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: -2px;
+    }
+
+    .tab-btn:hover {
+      color: #c9d1d9;
+    }
+
+    .tab-btn.active {
+      color: #4ec9b0;
+      border-bottom-color: #4ec9b0;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background-color: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #0e639c, #4ec9b0);
+    }
+
+    .stat-card:hover {
+      border-color: #0e639c;
+      box-shadow: 0 4px 16px rgba(14, 99, 156, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .stat-icon {
+      font-size: 2.5rem;
+      color: #4ec9b0;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: #858585;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #c9d1d9;
+    }
+
+    /* Section Container */
+    .section-container {
+      display: none;
+    }
+
+    .section-container.active {
+      display: block;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #c9d1d9;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-title i {
+      color: #4ec9b0;
+    }
+
+    /* Problems Section */
+    .problems-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .problem-card {
+      background-color: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .problem-card:hover {
+      border-color: #4ec9b0;
+      box-shadow: 0 8px 24px rgba(78, 201, 176, 0.15);
+      transform: translateY(-4px);
+    }
+
+    .problem-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #4ec9b0;
+      margin-bottom: 0.75rem;
+    }
+
+    .problem-description {
+      color: #858585;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      flex: 1;
+    }
+
+    .problem-meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .problem-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #858585;
+    }
+
+    .problem-meta-item i {
+      color: #0e639c;
+    }
+
+    .problem-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn-delete {
+      flex: 1;
+      background-color: rgba(255, 85, 85, 0.15);
+      color: #ff5555;
+      border: 1px solid rgba(255, 85, 85, 0.3);
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .btn-delete:hover {
+      background-color: rgba(255, 85, 85, 0.25);
+      border-color: rgba(255, 85, 85, 0.5);
+    }
+
+    /* Add Problem Form */
+    .form-container {
+      background-color: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-section-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #c9d1d9;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .form-section-title i {
+      color: #4ec9b0;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      color: #c9d1d9;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+      width: 100%;
+      background-color: #0d1117;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: #0e639c;
+      box-shadow: 0 0 0 3px rgba(14, 99, 156, 0.2);
+      background-color: #0d1117;
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, #0e639c, #1177bb);
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(14, 99, 156, 0.4);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    /* Users Section */
+    .users-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .user-card {
+      background-color: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-card:hover {
+      border-color: #0e639c;
+      box-shadow: 0 8px 24px rgba(14, 99, 156, 0.15);
+      transform: translateY(-4px);
+    }
+
+    .user-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0e639c, #4ec9b0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .user-info h3 {
+      color: #4ec9b0;
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    .user-info p {
+      color: #858585;
+      font-size: 0.85rem;
+      margin: 0;
+    }
+
+    .user-details {
+      color: #858585;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background-color: #0d1117;
+      border-radius: 6px;
+      border-left: 3px solid #0e639c;
+    }
+
+    .user-details strong {
+      color: #c9d1d9;
+    }
+
+    .user-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn-info {
+      flex: 1;
+      background-color: rgba(14, 99, 156, 0.15);
+      color: #4ec9b0;
+      border: 1px solid rgba(14, 99, 156, 0.3);
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    .btn-info:hover {
+      background-color: rgba(14, 99, 156, 0.25);
+      border-color: rgba(14, 99, 156, 0.5);
+    }
+
+    .btn-delete-user {
+      flex: 1;
+      background-color: rgba(255, 85, 85, 0.15);
+      color: #ff5555;
+      border: 1px solid rgba(255, 85, 85, 0.3);
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    .btn-delete-user:hover {
+      background-color: rgba(255, 85, 85, 0.25);
+      border-color: rgba(255, 85, 85, 0.5);
+    }
+
+    /* Submissions Modal */
+    .submissions-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .submissions-modal.show {
+      display: flex;
+    }
+
+    .submissions-content {
+      background-color: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      max-width: 900px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem;
+    }
+
+    .submissions-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #30363d;
+    }
+
+    .submissions-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #c9d1d9;
+    }
+
+    .close-submissions {
+      background: none;
+      border: none;
+      color: #858585;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .close-submissions:hover {
+      color: #ff5555;
+    }
+
+    .submission-item {
+      background-color: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .submission-item:hover {
+      border-color: #0e639c;
+    }
+
+    .submission-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .submission-program {
+      font-weight: 700;
+      color: #4ec9b0;
+      font-size: 1.05rem;
+    }
+
+    .submission-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .submission-status.correct {
+      background-color: rgba(16, 124, 16, 0.15);
+      color: #16a016;
+    }
+
+    .submission-status.incorrect {
+      background-color: rgba(255, 85, 85, 0.15);
+      color: #ff5555;
+    }
+
+    .submission-meta {
+      color: #858585;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .submission-code-label {
+      color: #858585;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .submission-code {
+      background-color: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      padding: 1rem;
+      color: #a8d8ea;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      white-space: pre;
+      margin-bottom: 0.75rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: #858585;
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .main-container {
+        padding: 1.5rem;
+      }
+
+      .problems-list {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .admin-header {
+        padding: 1rem;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .header-right {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .admin-tabs {
+        margin-left: -2rem;
+        margin-right: -2rem;
+        padding-left: 1rem;
+        overflow-x: auto;
+      }
+
+      .form-container {
+        padding: 1.5rem;
+      }
+
+      .problems-list,
+      .users-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .main-container {
+        padding: 1rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header-left {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .tab-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="admin-header">
+  <div class="header-content">
+    <div class="header-left">
+      <div class="brand-logo">
+        <i class="bi bi-cpu"></i>
+        Bhavishyath Admin
+      </div>
+      <div class="admin-badge">Administrator</div>
+    </div>
+    <div class="header-right">
+      <button class="logout-btn" id="logoutBtn" onclick="logout()">
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-container">
+  <!-- Navigation Tabs -->
+  <div class="admin-tabs">
+    <button class="tab-btn active" id="problemsTab" onclick="switchTab('problems')">
+      <i class="bi bi-diagram-3"></i>
+      Problems
+    </button>
+    <button class="tab-btn" id="usersTab" onclick="switchTab('users')">
+      <i class="bi bi-people-fill"></i>
+      Users
+    </button>
+  </div>
+
+  <!-- Problems Section -->
+  <div id="problemsSection" class="section-container active">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-diagram-3"></i></div>
+        <div class="stat-label">Total Problems</div>
+        <div class="stat-value" id="totalProblems">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-lightning-fill"></i></div>
+        <div class="stat-label">Total Submissions</div>
+        <div class="stat-value" id="totalSubmissions">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-percent"></i></div>
+        <div class="stat-label">Solve Rate</div>
+        <div class="stat-value" id="solveRate">0%</div>
+      </div>
+    </div>
+
+    <!-- Problems List Header -->
+    <div class="section-header">
+      <div class="section-title">
+        <i class="bi bi-list-task"></i>
+        All Problems
+      </div>
+    </div>
+    <div id="problemsList" class="problems-list"></div>
+
+    <!-- Add Problem Form -->
+    <div class="form-container">
+      <div class="form-section-title">
+        <i class="bi bi-plus-circle-fill"></i>
+        Add New Problem
+      </div>
+      <form id="uploadForm">
+        <div class="form-group">
+          <label class="form-label">Problem Title</label>
+          <input type="text" id="title" class="form-input" required placeholder="Enter an engaging problem title">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Problem Description</label>
+          <textarea id="description" class="form-textarea" required placeholder="Provide a detailed problem description..."></textarea>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem;">
+          <div class="form-group">
+            <label class="form-label">Programming Language</label>
+            <select id="language" class="form-select" required>
+              <option value="">Select Language</option>
+              <option value="1">C++</option>
+              <option value="2">Java</option>
+              <option value="3">Python</option>
+              <option value="4">C</option>
+              <option value="5">JavaScript</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Difficulty Level</label>
+            <select id="difficulty" class="form-select" required>
+              <option value="">Select Difficulty</option>
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Test Cases</label>
+            <input type="text" id="testcases" class="form-input" required placeholder="e.g. 5#120;6#720">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-submit">
+            <i class="bi bi-cloud-arrow-up"></i>
+            Publish Problem
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Users Section -->
+  <div id="usersSection" class="section-container">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+        <div class="stat-label">Total Users</div>
+        <div class="stat-value" id="totalUsers">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-graph-up"></i></div>
+        <div class="stat-label">Active Users</div>
+        <div class="stat-value" id="activeUsers">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-calendar-event"></i></div>
+        <div class="stat-label">New This Month</div>
+        <div class="stat-value" id="newUsers">0</div>
+      </div>
+    </div>
+
+    <!-- Users List Header -->
+    <div class="section-header">
+      <div class="section-title">
+        <i class="bi bi-people-fill"></i>
+        All Users
+      </div>
+    </div>
+    <div id="usersList" class="users-grid"></div>
+  </div>
+</div>
+
+<!-- Submissions Modal -->
+<div id="submissionsModal" class="submissions-modal">
+  <div class="submissions-content">
+    <div class="submissions-header">
+      <div class="submissions-title">User Submissions</div>
+      <button class="close-submissions" onclick="closeSubmissions()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div id="submissionsList"></div>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+  const supabase = createClient(
+    'https://cfajcmbhspradnvofbgb.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmYWpjbWJoc3ByYWRudm9mYmdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzMDI0MDQsImV4cCI6MjA2OTg3ODQwNH0.mlq67ZmdeE_3_sPXY17JLd9xJ8KGDnR3eiJ9LoO9NUE'
+  );
+
+  const userId = localStorage.getItem('user_id');
+  const role = localStorage.getItem('role');
+  
+  // Redirect if not admin
+  if (!userId || role !== 'admin') {
+    window.location.href = 'admin-login.html';
+  }
+
+  // Global state
+  let allProblems = [];
+  let allUsers = [];
+  let allSubmissions = [];
+
+  // DOM Elements
+  const problemsList = document.getElementById('problemsList');
+  const usersList = document.getElementById('usersList');
+  const submissionsModal = document.getElementById('submissionsModal');
+  const submissionsList = document.getElementById('submissionsList');
+
+  // Tab Switching
+  window.switchTab = function (tab) {
+    // Update buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(tab + 'Tab').classList.add('active');
+
+    // Update sections
+    document.querySelectorAll('.section-container').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(tab + 'Section').classList.add('active');
+
+    if (tab === 'problems') {
+      loadProblems();
+    } else {
+      loadUsers();
+    }
+  };
+
+  // Load all data
+  async function loadProblems() {
+    try {
+      const { data, error } = await supabase
+        .from('programs')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      allProblems = data || [];
+      await loadSubmissions();
+      renderProblems();
+      updateProblemStats();
+    } catch (err) {
+      console.error('Error loading problems:', err);
+      problemsList.innerHTML = '<div class="empty-state"><i class="bi bi-exclamation-circle"></i><p>Error loading problems</p></div>';
+    }
+  }
+
+  async function loadUsers() {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .neq('role', 'admin')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      allUsers = data || [];
+      await loadSubmissions();
+      renderUsers();
+      updateUserStats();
+    } catch (err) {
+      console.error('Error loading users:', err);
+      usersList.innerHTML = '<div class="empty-state"><i class="bi bi-exclamation-circle"></i><p>Error loading users</p></div>';
+    }
+  }
+
+  async function loadSubmissions() {
+    try {
+      const { data, error } = await supabase
+        .from('submissions')
+        .select('*, programs(id, title)')
+        .order('submitted_at', { ascending: false });
+
+      if (error) throw error;
+      allSubmissions = data || [];
+    } catch (err) {
+      console.error('Error loading submissions:', err);
+    }
+  }
+
+  // Render Functions
+  function renderProblems() {
+    if (allProblems.length === 0) {
+      problemsList.innerHTML = '<div class="empty-state"><i class="bi bi-inbox"></i><p>No problems yet. Create your first problem!</p></div>';
+      return;
+    }
+
+    problemsList.innerHTML = allProblems.map(p => `
+      <div class="problem-card">
+        <div class="problem-title">${escapeHtml(p.title)}</div>
+        <div class="problem-description">${escapeHtml(p.description).substring(0, 150)}...</div>
+        <div class="problem-meta">
+          <div class="problem-meta-item">
+            <i class="bi bi-code-square"></i>
+            <span>${getLanguageName(p.language_id)}</span>
+          </div>
+          <div class="problem-meta-item">
+            <i class="bi bi-lightning-fill"></i>
+            <span style="padding: 0.25rem 0.75rem; border-radius: 4px; background-color: ${getDifficultyColor(p.difficulty)}; font-size: 0.8rem; font-weight: 600;">${(p.difficulty || 'medium').charAt(0).toUpperCase() + (p.difficulty || 'medium').slice(1)}</span>
+          </div>
+          <div class="problem-meta-item">
+            <i class="bi bi-calendar3"></i>
+            <span>${formatDate(p.created_at)}</span>
+          </div>
+        </div>
+        <div class="problem-actions">
+          <button class="btn-delete" onclick="deleteProblem('${p.id}')">
+            <i class="bi bi-trash3"></i>
+            Delete
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderUsers() {
+    if (allUsers.length === 0) {
+      usersList.innerHTML = '<div class="empty-state"><i class="bi bi-people"></i><p>No users registered yet</p></div>';
+      return;
+    }
+
+    usersList.innerHTML = allUsers.map(u => {
+      const userSubmissions = allSubmissions.filter(s => s.user_id === u.id);
+      const userInitials = u.email ? u.email.substring(0, 2).toUpperCase() : 'U';
+      
+      return `
+        <div class="user-card">
+          <div class="user-header">
+            <div class="user-avatar">${userInitials}</div>
+            <div class="user-info">
+              <h3>${escapeHtml(u.email)}</h3>
+              <p>User ID: ${u.id.substring(0, 12)}...</p>
+            </div>
+          </div>
+          <div class="user-details">
+            <strong>Joined:</strong> ${formatDate(u.created_at)}<br>
+            <strong>Submissions:</strong> ${userSubmissions.length}
+          </div>
+          <div class="user-actions">
+            <button class="btn-info" onclick="viewSubmissions('${u.id}')">
+              <i class="bi bi-eye"></i>
+              View Submissions
+            </button>
+            <button class="btn-delete-user" onclick="deleteUser('${u.id}')">
+              <i class="bi bi-trash3"></i>
+              Delete
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // View Submissions
+  window.viewSubmissions = async (uid) => {
+    const userSubmissions = allSubmissions.filter(s => s.user_id === uid);
+
+    if (userSubmissions.length === 0) {
+      submissionsList.innerHTML = '<div class="empty-state"><i class="bi bi-inbox"></i><p>No submissions from this user</p></div>';
+      submissionsModal.classList.add('show');
+      return;
+    }
+
+    // Calculate user-specific stats
+    const correctSubmissions = userSubmissions.filter(s => s.is_correct).length;
+    const userSolveRate = Math.round((correctSubmissions / userSubmissions.length) * 100);
+
+    // Create modal header with stats
+    const statsHtml = `
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="background-color: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 1rem; text-align: center;">
+          <div style="color: #858585; font-size: 0.9rem; margin-bottom: 0.5rem;">Total Submissions</div>
+          <div style="font-size: 1.75rem; font-weight: 700; color: #4ec9b0;">${userSubmissions.length}</div>
+        </div>
+        <div style="background-color: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 1rem; text-align: center;">
+          <div style="color: #858585; font-size: 0.9rem; margin-bottom: 0.5rem;">Correct</div>
+          <div style="font-size: 1.75rem; font-weight: 700; color: #16a016;">${correctSubmissions}</div>
+        </div>
+        <div style="background-color: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 1rem; text-align: center;">
+          <div style="color: #858585; font-size: 0.9rem; margin-bottom: 0.5rem;">Solve Rate</div>
+          <div style="font-size: 1.75rem; font-weight: 700; color: #0e639c;">${userSolveRate}%</div>
+        </div>
+      </div>
+    `;
+
+    submissionsList.innerHTML = statsHtml + userSubmissions.map((s, idx) => `
+      <div class="submission-item">
+        <div class="submission-header">
+          <div class="submission-program">${s.programs?.title || 'Unknown Program'}</div>
+          <div class="submission-status ${s.is_correct ? 'correct' : 'incorrect'}">
+            <i class="bi bi-${s.is_correct ? 'check-circle-fill' : 'x-circle-fill'}"></i>
+            ${s.is_correct ? 'Correct' : 'Incorrect'}
+          </div>
+        </div>
+        <div class="submission-meta">
+          <strong>Submitted:</strong> ${formatDate(s.submitted_at)}
+        </div>
+        <div class="submission-code-label">Code:</div>
+        <div class="submission-code">${escapeHtml(s.code)}</div>
+        <div style="margin-top: 1rem;">
+          <button class="submission-output-toggle" onclick="toggleSubmissionOutput('output-${idx}')" style="background-color: rgba(14, 99, 156, 0.15); color: #4ec9b0; border: 1px solid rgba(14, 99, 156, 0.3); padding: 0.6rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem; width: 100%; justify-content: center;">
+            <i class="bi bi-chevron-right" id="toggle-icon-output-${idx}"></i>
+            View Output
+          </button>
+        </div>
+        <div id="output-${idx}" class="submission-output-content" style="display: none; margin-top: 1rem;">
+          <div class="submission-code-label">Output:</div>
+          <div class="submission-code">${escapeHtml(s.output)}</div>
+        </div>
+      </div>
+    `).join('');
+    submissionsModal.classList.add('show');
+  };
+
+  window.toggleSubmissionOutput = function (outputId) {
+    const outputContent = document.getElementById(outputId);
+    const toggleIcon = document.getElementById('toggle-icon-' + outputId);
+    
+    if (outputContent.style.display === 'none') {
+      outputContent.style.display = 'block';
+      toggleIcon.style.transform = 'rotate(90deg)';
+    } else {
+      outputContent.style.display = 'none';
+      toggleIcon.style.transform = 'rotate(0deg)';
+    }
+  };
+
+  window.closeSubmissions = () => {
+    submissionsModal.classList.remove('show');
+  };
+
+  // Delete Functions
+  window.deleteProblem = async (id) => {
+    if (!confirm('Are you sure you want to delete this problem? This action cannot be undone.')) return;
+    
+    try {
+      const { error } = await supabase.from('programs').delete().eq('id', id);
+      if (error) throw error;
+      
+      allProblems = allProblems.filter(p => p.id !== id);
+      renderProblems();
+      updateProblemStats();
+      showNotification('Problem deleted successfully');
+    } catch (err) {
+      alert('Error deleting problem: ' + err.message);
+    }
+  };
+
+  window.deleteUser = async (id) => {
+    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
+
+    try {
+      await supabase.from('submissions').delete().eq('user_id', id);
+      const { error } = await supabase.from('users').delete().eq('id', id);
+      if (error) throw error;
+
+      allUsers = allUsers.filter(u => u.id !== id);
+      allSubmissions = allSubmissions.filter(s => s.user_id !== id);
+      renderUsers();
+      updateUserStats();
+      showNotification('User deleted successfully');
+    } catch (err) {
+      alert('Error deleting user: ' + err.message);
+    }
+  };
+
+  // Form Submission
+  document.getElementById('uploadForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("title").value.trim();
+    const description = document.getElementById("description").value.trim();
+    const language_id = parseInt(document.getElementById("language").value);
+    const difficulty = document.getElementById("difficulty").value;
+    const rawTestCases = document.getElementById("testcases").value.trim();
+
+    if (!title || !description || !language_id || !difficulty || !rawTestCases) {
+      alert('Please fill all fields correctly');
+      return;
+    }
+
+    const testCases = rawTestCases.split(";").map(pair => {
+      const [input, output] = pair.split("#");
+      return { input: input.trim(), output: output.trim() };
+    });
+
+    try {
+      const { error } = await supabase.from('programs').insert([{ 
+        title, 
+        description, 
+        language_id, 
+        difficulty,
+        test_cases: testCases 
+      }]);
+
+      if (error) throw error;
+
+      showNotification('Problem published successfully!');
+      document.getElementById('uploadForm').reset();
+      await loadProblems();
+    } catch (err) {
+      alert('Error uploading problem: ' + err.message);
+    }
+  };
+
+  // Logout
+  window.logout = () => {
+    if (confirm('Are you sure you want to logout?')) {
+      localStorage.clear();
+      window.location.href = 'admin-login.html';
+    }
+  };
+
+  // Utility Functions
+  function getLanguageName(langId) {
+    const langs = { 1: 'C++', 2: 'Java', 3: 'Python', 4: 'C', 5: 'JavaScript' };
+    return langs[langId] || 'Unknown';
+  }
+
+  function getDifficultyColor(difficulty) {
+    const colors = {
+      'easy': 'rgba(16, 124, 16, 0.2)',
+      'medium': 'rgba(255, 193, 7, 0.2)',
+      'hard': 'rgba(255, 85, 85, 0.2)'
+    };
+    return colors[difficulty] || colors['medium'];
+  }
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  }
+
+  function escapeHtml(text) {
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+  }
+
+  function updateProblemStats() {
+    document.getElementById('totalProblems').textContent = allProblems.length;
+    document.getElementById('totalSubmissions').textContent = allSubmissions.length;
+    const correctSubmissions = allSubmissions.filter(s => s.is_correct).length;
+    const solveRate = allSubmissions.length > 0 ? Math.round((correctSubmissions / allSubmissions.length) * 100) : 0;
+    document.getElementById('solveRate').textContent = solveRate + '%';
+  }
+
+  function updateUserStats() {
+    const now = new Date();
+    const thisMonth = allUsers.filter(u => {
+      const userDate = new Date(u.created_at);
+      return userDate.getMonth() === now.getMonth() && userDate.getFullYear() === now.getFullYear();
+    }).length;
+
+    document.getElementById('totalUsers').textContent = allUsers.length;
+    document.getElementById('activeUsers').textContent = Math.max(0, allUsers.length - 5); // Simplified
+    document.getElementById('newUsers').textContent = thisMonth;
+  }
+
+  function showNotification(message) {
+    // Simple notification - you can enhance this
+    console.log(message);
+  }
+
+  // Initial Load
+  loadProblems();
+</script>
+
+</body>
+</html>
