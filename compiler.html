@@ -491,7 +491,8 @@
             .problem-section {
                 padding: 1rem;
                 min-height: auto;
-                max-height: 300px;
+                max-height: 250px;
+                overflow-y: auto;
             }
 
             .language-selector {
@@ -509,7 +510,13 @@
             }
 
             .editor-wrapper {
-                min-height: 300px;
+                min-height: 200px;
+                height: 200px;
+            }
+            
+            #editor {
+                height: 200px !important;
+                min-height: 200px;
             }
 
             .controls {
@@ -553,6 +560,17 @@
             .problem-section {
                 padding: 0.75rem;
                 font-size: 0.9rem;
+                max-height: 200px;
+            }
+            
+            .editor-wrapper {
+                min-height: 180px;
+                height: 180px;
+            }
+            
+            #editor {
+                height: 180px !important;
+                min-height: 180px;
             }
 
             .language-selector label {

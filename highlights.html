@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Highlights - Bhavishyath</title>
+    <link rel="icon" href="/bhavishyath_logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="highlights.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="highlights-header">
+        <div class="header-content">
+            <button class="back-btn" onclick="goBack()">
+                <i class="bi bi-arrow-left"></i>
+                <span>Back</span>
+            </button>
+            <h1 class="header-title">
+                <i class="bi bi-star-fill"></i> Monthly Highlights
+            </h1>
+            <div class="header-spacer"></div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="highlights-container">
+        <!-- Filter Section -->
+        <section class="filter-section">
+            <div class="filter-controls">
+                <div class="year-filter">
+                    <label for="yearSelect">Year:</label>
+                    <select id="yearSelect" class="filter-select">
+                        <option value="">All Years</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026" selected>2026</option>
+                    </select>
+                </div>
+
+                <div class="view-filters">
+                    <button class="filter-btn active" data-filter="all">
+                        <i class="bi bi-grid-3x3-gap"></i>
+                        All Highlights
+                    </button>
+                    <button class="filter-btn" data-filter="viewed">
+                        <i class="bi bi-eye-fill"></i>
+                        Viewed
+                    </button>
+                    <button class="filter-btn" data-filter="unwatched">
+                        <i class="bi bi-eye-slash-fill"></i>
+                        Unwatched
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Highlights Grid -->
+        <section class="highlights-section">
+            <div id="highlightsGrid" class="highlights-grid">
+                <!-- Loading skeleton cards -->
+                <div class="highlight-card skeleton">
+                    <div class="card-header"></div>
+                    <div class="card-body">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-text"></div>
+                    </div>
+                </div>
+                <div class="highlight-card skeleton">
+                    <div class="card-header"></div>
+                    <div class="card-body">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-text"></div>
+                    </div>
+                </div>
+                <div class="highlight-card skeleton">
+                    <div class="card-header"></div>
+                    <div class="card-body">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="bi bi-inbox"></i>
+                <h3>No Highlights Found</h3>
+                <p>Check back later for more monthly highlights!</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Detail Modal -->
+    <div id="highlightModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle" class="modal-title"></h2>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="modalDescription" class="modal-description"></p>
+                
+                <div class="stats-section">
+                    <h3>Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <div>
+                                <div class="stat-label">Problems Completed</div>
+                                <div id="completedCount" class="stat-value">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="bi bi-trophy-fill"></i>
+                            <div>
+                                <div class="stat-label">Top Performers</div>
+                                <div id="performerCount" class="stat-value">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="solved-problem-section">
+                    <h3>Your Latest Solution</h3>
+                    <div id="solvedProblemContainer" class="solved-problem-container">
+                        <p style="color: #64748b; text-align: center;">Loading...</p>
+                    </div>
+                </div>
+
+                <div class="performers-section">
+                    <h3>Top Performers</h3>
+                    <ul id="topPerformersList" class="performers-list">
+                        <li class="performer-item">
+                            <i class="bi bi-person-circle"></i>
+                            <div>
+                                <div class="performer-name">Loading...</div>
+                                <div class="performer-score">--</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">Close</button>
+                <button id="watchBtn" class="btn-primary" onclick="toggleWatchedFromModal()">
+                    <i class="bi bi-bookmark-check-fill"></i> Mark as Read
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        // Configuration
+        const SUPABASE_URL = "https://cfajcmbhspradnvofbgb.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmYWpjbWJoc3ByYWRudm9mYmdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzMDI0MDQsImV4cCI6MjA2OTg3ODQwNH0.mlq67ZmdeE_3_sPXY17JLd9xJ8KGDnR3eiJ9LoO9NUE";
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const CACHE_KEY = 'highlights_cache';
+        const CACHE_EXPIRY = 3600000;
+        const WATCH_KEY = 'highlights_watched';
+
+        const MONTHS = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+
+        let allHighlights = [];
+        let filteredHighlights = [];
+        let currentFilter = 'all';
+        let currentYear = new Date().getFullYear().toString();
+        let currentModalData = null;
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                const userId = localStorage.getItem('user_id') || session?.user?.id;
+
+                if (!userId) {
+                    console.log('No user session, showing demo data');
+                }
+
+                await checkAndCreateMonthlyHighlight();
+                await loadHighlights();
+                setupFilterListeners();
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') closeModal();
+                });
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showToast('Failed to load highlights', 'error');
+            }
+        });
+
+        async function loadHighlights() {
+            try {
+                const cached = getCachedHighlights();
+                if (cached && cached.length > 0) {
+                    allHighlights = cached;
+                    renderHighlights();
+                    refreshHighlightsFromSupabase();
+                } else {
+                    await loadHighlightsFromSupabase();
+                }
+            } catch (error) {
+                console.error('Error loading highlights:', error);
+                showToast('Could not load highlights', 'error');
+            }
+        }
+
+        async function loadHighlightsFromSupabase() {
+            try {
+                const { data, error } = await supabase
+                    .from('highlights')
+                    .select('*')
+                    .order('month', { ascending: false });
+
+                if (error) throw error;
+
+                allHighlights = data || [];
+                cacheHighlights(allHighlights);
+                renderHighlights();
+            } catch (error) {
+                console.error('Supabase load error:', error);
+                showToast('Error loading highlights from server', 'error');
+            }
+        }
+
+        async function refreshHighlightsFromSupabase() {
+            try {
+                const { data, error } = await supabase
+                    .from('highlights')
+                    .select('*')
+                    .order('month', { ascending: false });
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    allHighlights = data;
+                    cacheHighlights(allHighlights);
+                    renderHighlights();
+                    console.log('Highlights refreshed from Supabase:', allHighlights);
+                }
+            } catch (error) {
+                console.error('Background refresh error:', error);
+            }
+        }
+
+        async function checkAndCreateMonthlyHighlight() {
+            try {
+                const now = new Date();
+                const currentMonth = MONTHS[now.getMonth()];
+                const currentYear = now.getFullYear();
+                const monthKey = `${currentMonth}-${currentYear}`;
+
+                const { data, error } = await supabase
+                    .from('highlights')
+                    .select('id')
+                    .eq('month', monthKey)
+                    .single();
+
+                if (!data && error?.code === 'PGRST116') {
+                    const { error: insertError } = await supabase
+                        .from('highlights')
+                        .insert([{
+                            month: monthKey,
+                            title: `${currentMonth} ${currentYear} Highlights`,
+                            description: `Join our community for the ${currentMonth} ${currentYear} monthly challenges!`,
+                            completed_count: 0,
+                            top_users: [],
+                            is_watched: {}
+                        }]);
+
+                    if (insertError) {
+                        console.error('Error creating monthly highlight:', insertError);
+                    } else {
+                        console.log('Monthly highlight created for', monthKey);
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking monthly highlight:', error);
+            }
+        }
+
+        function cacheHighlights(highlights) {
+            try {
+                const cacheData = {
+                    highlights: highlights,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+            } catch (error) {
+                console.error('Cache error:', error);
+            }
+        }
+
+        function getCachedHighlights() {
+            try {
+                const cached = localStorage.getItem(CACHE_KEY);
+                if (!cached) return null;
+
+                const cacheData = JSON.parse(cached);
+                const isExpired = Date.now() - cacheData.timestamp > CACHE_EXPIRY;
+
+                if (isExpired) {
+                    localStorage.removeItem(CACHE_KEY);
+                    return null;
+                }
+
+                return cacheData.highlights;
+            } catch (error) {
+                console.error('Error reading cache:', error);
+                return null;
+            }
+        }
+
+        function clearHighlightsCache() {
+            try {
+                localStorage.removeItem(CACHE_KEY);
+            } catch (error) {
+                console.error('Error clearing cache:', error);
+            }
+        }
+
+        async function markAsWatched(highlightId) {
+            try {
+                const userId = localStorage.getItem('user_id');
+                if (!userId) return;
+
+                const watchedKey = `${WATCH_KEY}_${userId}`;
+                let watched = JSON.parse(localStorage.getItem(watchedKey) || '{}');
+
+                watched[highlightId] = true;
+                localStorage.setItem(watchedKey, JSON.stringify(watched));
+            } catch (error) {
+                console.error('Error marking as watched:', error);
+            }
+        }
+
+        function isHighlightWatched(highlightId) {
+            try {
+                const userId = localStorage.getItem('user_id');
+                if (!userId) return false;
+
+                const watchedKey = `${WATCH_KEY}_${userId}`;
+                const watched = JSON.parse(localStorage.getItem(watchedKey) || '{}');
+
+                return watched[highlightId] === true;
+            } catch (error) {
+                console.error('Error checking watched status:', error);
+                return false;
+            }
+        }
+
+        function setupFilterListeners() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    e.target.closest('.filter-btn').classList.add('active');
+                    currentFilter = e.target.closest('.filter-btn').dataset.filter;
+                    renderHighlights();
+                });
+            });
+
+            document.getElementById('yearSelect').addEventListener('change', (e) => {
+                currentYear = e.target.value;
+                renderHighlights();
+            });
+        }
+
+        function renderHighlights() {
+            try {
+                const grid = document.getElementById('highlightsGrid');
+                const emptyState = document.getElementById('emptyState');
+
+                document.querySelectorAll('.highlight-card.skeleton').forEach(el => el.remove());
+
+                filteredHighlights = allHighlights.filter(highlight => {
+                    if (currentYear && !highlight.month.includes(currentYear)) {
+                        return false;
+                    }
+
+                    const isWatched = isHighlightWatched(highlight.id);
+                    if (currentFilter === 'viewed' && !isWatched) return false;
+                    if (currentFilter === 'unwatched' && isWatched) return false;
+
+                    return true;
+                });
+
+                if (filteredHighlights.length === 0) {
+                    grid.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                grid.style.display = 'grid';
+                emptyState.style.display = 'none';
+                grid.innerHTML = filteredHighlights.map(highlight => createHighlightCard(highlight)).join('');
+            } catch (error) {
+                console.error('Render error:', error);
+            }
+        }
+
+        function createHighlightCard(highlight) {
+            const isWatched = isHighlightWatched(highlight.id);
+            const month = highlight.month.split('-')[0];
+            const topCount = highlight.top_users ? highlight.top_users.length : 0;
+
+            const newBadge = !isWatched ? '<div class="new-badge">NEW</div>' : '';
+            const watchedBtn = isWatched
+                ? '<button class="btn-mark-read read" onclick="toggleWatched(\'' + highlight.id + '\')"><i class="bi bi-bookmark-check-fill"></i></button>'
+                : '<button class="btn-mark-read" onclick="toggleWatched(\'' + highlight.id + '\')"><i class="bi bi-bookmark"></i></button>';
+
+            return `
+                <div class="highlight-card">
+                    <div class="card-header">
+                        ${newBadge}
+                        <div class="card-month">${month}</div>
+                        <h3 class="card-title">${escapeHtml(highlight.title)}</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-description">${escapeHtml(highlight.description || 'No description')}</p>
+                        <div class="card-stats">
+                            <div class="stat-box">
+                                <div class="stat-box-label">Problems</div>
+                                <div class="stat-box-value">${highlight.completed_count || 0}</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-box-label">Top Performers</div>
+                                <div class="stat-box-value">${topCount}</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-read-more" onclick="openModal('${highlight.id}')">
+                                <i class="bi bi-arrow-right-circle"></i>
+                                Read More
+                            </button>
+                            ${watchedBtn}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.openModal = async function(highlightId) {
+            try {
+                const highlight = allHighlights.find(h => h.id === highlightId);
+                if (!highlight) return;
+
+                currentModalData = highlight;
+
+                await markAsWatched(highlightId);
+
+                document.getElementById('modalTitle').textContent = highlight.title;
+                document.getElementById('modalDescription').textContent = highlight.description || 'No description';
+                document.getElementById('completedCount').textContent = highlight.completed_count || 0;
+
+                const performerCount = highlight.top_users ? highlight.top_users.length : 0;
+                document.getElementById('performerCount').textContent = performerCount;
+
+                // Fetch and display solved problems
+                await displaySolvedProblems(highlightId);
+
+                const performersList = document.getElementById('topPerformersList');
+                if (highlight.top_users && highlight.top_users.length > 0) {
+                    performersList.innerHTML = highlight.top_users.map(performer => `
+                        <li class="performer-item">
+                            <i class="bi bi-person-circle"></i>
+                            <div>
+                                <div class="performer-name">${escapeHtml(performer.name || 'Unknown')}</div>
+                                <div class="performer-score">${performer.score || 0} points</div>
+                            </div>
+                        </li>
+                    `).join('');
+                } else {
+                    performersList.innerHTML = '<li class="performer-item"><div style="text-align: center; width: 100%; color: #64748b;">No performers yet</div></li>';
+                }
+
+                const watchBtn = document.getElementById('watchBtn');
+                const isWatched = isHighlightWatched(highlightId);
+                if (isWatched) {
+                    watchBtn.innerHTML = '<i class="bi bi-bookmark-check-fill"></i> Mark as Unread';
+                    watchBtn.style.background = '#14b8a6';
+                } else {
+                    watchBtn.innerHTML = '<i class="bi bi-bookmark-check-fill"></i> Mark as Read';
+                    watchBtn.style.background = '';
+                }
+
+                const modal = document.getElementById('highlightModal');
+                modal.classList.add('show');
+
+                renderHighlights();
+            } catch (error) {
+                console.error('Modal error:', error);
+                showToast('Error opening highlight details', 'error');
+            }
+        };
+
+        async function displaySolvedProblems(highlightId) {
+            try {
+                const container = document.getElementById('solvedProblemContainer');
+                
+                // Get solved problems from the highlight data
+                const highlight = allHighlights.find(h => h.id === highlightId);
+                
+                console.log('Displaying solved problems for highlight:', highlightId);
+                console.log('Highlight data:', highlight);
+                
+                // Check if solved_problems exists and has items
+                if (!highlight) {
+                    container.innerHTML = '<p style="color: #64748b; text-align: center;">Highlight not found</p>';
+                    return;
+                }
+
+                const solvedProblems = highlight.solved_problems;
+                console.log('Solved problems array:', solvedProblems);
+                
+                if (!solvedProblems || !Array.isArray(solvedProblems) || solvedProblems.length === 0) {
+                    container.innerHTML = '<p style="color: #64748b; text-align: center;">No solved problems yet in highlights. Submit a new solution to see it here!</p>';
+                    return;
+                }
+
+                // Get a random solved problem
+                const randomProblem = solvedProblems[Math.floor(Math.random() * solvedProblems.length)];
+
+                if (!randomProblem) {
+                    container.innerHTML = '<p style="color: #64748b; text-align: center;">No solved problems found</p>';
+                    return;
+                }
+
+                console.log('Random problem selected:', randomProblem);
+
+                // Fetch problem details from programs table
+                const { data: program, error } = await supabase
+                    .from('programs')
+                    .select('title, language_id')
+                    .eq('id', randomProblem.program_id)
+                    .single();
+
+                if (error) {
+                    console.error('Error fetching program:', error);
+                    container.innerHTML = '<p style="color: #64748b; text-align: center;">Error loading problem details</p>';
+                    return;
+                }
+
+                const languageNames = {
+                    '1': 'C',
+                    '2': 'C++',
+                    '3': 'Python',
+                    '62': 'Java',
+                    '71': 'Python',
+                    '63': 'JavaScript'
+                };
+
+                const langName = languageNames[String(program?.language_id)] || 'Code';
+                const solveDate = new Date(randomProblem.solved_at);
+                const formattedTime = solveDate.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+
+                const testCases = randomProblem.test_cases_passed || 5;
+                const code = randomProblem.code || 'No code available';
+
+                console.log('Rendering solved problem:', program?.title, 'in', langName);
+
+                container.innerHTML = `
+                    <div class="solved-problem-item">
+                        <div class="solved-problem-header">
+                            <div class="solved-problem-title">
+                                <i class="bi bi-check-circle-fill"></i>
+                                ${escapeHtml(program?.title || 'Problem')}
+                            </div>
+                            <span class="test-cases-badge">
+                                <i class="bi bi-check-all"></i> ${testCases} Test Cases
+                            </span>
+                        </div>
+                        <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1rem;">
+                            <i class="bi bi-calendar-event"></i> Solved on ${formattedTime} in ${langName}
+                        </p>
+                        <div class="code-preview">
+                            <code>${escapeHtml(code)}</code>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error displaying solved problems:', error);
+                document.getElementById('solvedProblemContainer').innerHTML = '<p style="color: #64748b; text-align: center;">Error loading solved problems</p>';
+            }
+        }
+
+        window.closeModal = function() {
+            const modal = document.getElementById('highlightModal');
+            modal.classList.remove('show');
+            currentModalData = null;
+        };
+
+        window.toggleWatchedFromModal = async function() {
+            if (!currentModalData) return;
+
+            const isWatched = isHighlightWatched(currentModalData.id);
+            if (isWatched) {
+                const watchedKey = `${WATCH_KEY}_${localStorage.getItem('user_id')}`;
+                let watched = JSON.parse(localStorage.getItem(watchedKey) || '{}');
+                delete watched[currentModalData.id];
+                localStorage.setItem(watchedKey, JSON.stringify(watched));
+            } else {
+                await markAsWatched(currentModalData.id);
+            }
+
+            const watchBtn = document.getElementById('watchBtn');
+            const newIsWatched = isHighlightWatched(currentModalData.id);
+            if (newIsWatched) {
+                watchBtn.innerHTML = '<i class="bi bi-bookmark-check-fill"></i> Mark as Unread';
+                watchBtn.style.background = '#14b8a6';
+            } else {
+                watchBtn.innerHTML = '<i class="bi bi-bookmark-check-fill"></i> Mark as Read';
+                watchBtn.style.background = '';
+            }
+
+            renderHighlights();
+        };
+
+        window.toggleWatched = async function(highlightId) {
+            const isWatched = isHighlightWatched(highlightId);
+            if (isWatched) {
+                const userId = localStorage.getItem('user_id');
+                const watchedKey = `${WATCH_KEY}_${userId}`;
+                let watched = JSON.parse(localStorage.getItem(watchedKey) || '{}');
+                delete watched[highlightId];
+                localStorage.setItem(watchedKey, JSON.stringify(watched));
+                showToast('Marked as unread', 'info');
+            } else {
+                await markAsWatched(highlightId);
+                showToast('Marked as read', 'success');
+            }
+            renderHighlights();
+        };
+
+        window.goBack = function() {
+            window.history.back();
+        };
+
+        function showToast(message, type = 'info') {
+            try {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+
+                const icons = {
+                    success: 'bi-check-circle',
+                    error: 'bi-exclamation-circle',
+                    warning: 'bi-exclamation-triangle',
+                    info: 'bi-info-circle'
+                };
+
+                toast.innerHTML = `
+                    <i class="bi ${icons[type]}"></i>
+                    <span class="toast-message">${escapeHtml(message)}</span>
+                `;
+
+                container.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.style.animation = 'slideInRight 0.3s ease reverse';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            } catch (error) {
+                console.error('Toast error:', error);
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('highlightModal');
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+        });
+    </script>
+</body>
+</html>

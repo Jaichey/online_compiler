@@ -714,9 +714,14 @@
     }
 
     /* Responsive Design */
-    @media (max-width: 1024px) {
+    @media (max-width: 1200px) {
       .dashboard-grid {
         grid-template-columns: 1fr;
+      }
+      
+      .difficulty-card,
+      .activity-card {
+        max-width: 100%;
       }
     }
 
@@ -745,10 +750,31 @@
       .difficulty-card,
       .activity-card {
         padding: 1.5rem;
+        width: 100%;
+        max-width: 100%;
+      }
+      
+      .difficulty-list {
+        max-width: 100%;
+      }
+      
+      .circular-progress {
+        flex-wrap: wrap;
+        gap: 1rem;
       }
 
       .problems-grid {
         grid-template-columns: 1fr;
+      }
+      
+      .heatmap-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 0.5rem;
+      }
+      
+      .heatmap-grid {
+        min-width: 600px;
       }
 
       .nav-buttons {
@@ -778,16 +804,56 @@
       .logo {
         font-size: 1.25rem;
       }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
 
       .stat-icon {
         width: 40px;
         height: 40px;
         font-size: 1.25rem;
       }
+      
+      .difficulty-card,
+      .activity-card {
+        padding: 1rem;
+      }
+      
+      .card-title {
+        font-size: 1rem;
+      }
 
       .circular-progress {
-        flex-direction: column;
-        gap: 1.5rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 1rem;
+      }
+      
+      .circle-svg {
+        width: 55px;
+        height: 55px;
+      }
+      
+      .circle-count {
+        font-size: 0.9rem;
+      }
+      
+      .circle-label {
+        font-size: 0.75rem;
+      }
+      
+      .heatmap-grid {
+        min-width: 400px;
+        grid-template-columns: repeat(53, 7px);
+        gap: 1.5px;
+      }
+      
+      .heatmap-cell {
+        width: 7px;
+        height: 7px;
       }
     }
   </style>
@@ -809,6 +875,9 @@
           <i class="bi bi-person-circle"></i>
           <span>Profile</span>
         </a>
+        <a class="nav-btn nav-btn-primary" href="highlights.html">
+    <i class="bi bi-star-fill"></i> Highlights
+</a>
         <button id="logoutBtn" class="nav-btn nav-btn-danger">
           <i class="bi bi-box-arrow-right"></i>
           <span>Logout</span>
