@@ -31,6 +31,22 @@
       "destination": "/user-login.html"
     },
     {
+      "source": "/videos",
+      "destination": "/videos.html"
+    },
+    {
+      "source": "/study-materials",
+      "destination": "/study-materials.html"
+    },
+    {
+      "source": "/references",
+      "destination": "/references.html"
+    },
+    {
+      "source": "/highlights",
+      "destination": "/highlights.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/$1"
     }
