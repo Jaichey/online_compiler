@@ -515,10 +515,37 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
+      white-space: nowrap;
     }
 
     .clear-filters-btn:hover {
       background-color: var(--border-color);
+    }
+
+    @media (max-width: 768px) {
+      .clear-filters-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+      }
+      
+      .clear-filters-btn span {
+        display: none;
+      }
+      
+      .clear-filters-btn::after {
+        content: 'Clear';
+      }
+    }
+
+    @media (max-width: 480px) {
+      .clear-filters-btn {
+        padding: 0.625rem 0.75rem;
+        font-size: 0.75rem;
+      }
+      
+      .clear-filters-btn i {
+        margin-right: 0.25rem;
+      }
     }
 
     .filter-group {
@@ -1203,7 +1230,7 @@
             placeholder="Search problems by title or description..."
           >
           <button class="clear-filters-btn" id="clearFiltersBtn">
-            <i class="bi bi-x-lg"></i> Clear Filters
+            <i class="bi bi-x-lg"></i> <span>Clear Filters</span>
           </button>
         </div>
 
