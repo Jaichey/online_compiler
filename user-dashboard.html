@@ -337,6 +337,8 @@
       display: flex;
       justify-content: space-around;
       margin-top: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
 
     .circle-item {
@@ -392,13 +394,17 @@
     .heatmap-container {
       margin-top: 1.5rem;
       overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.5rem;
     }
 
     .heatmap-grid {
       display: grid;
       grid-template-columns: repeat(53, 12px);
       gap: 3px;
-      min-width: 680px;
+      min-width: fit-content;
+      width: max-content;
     }
 
     .heatmap-cell {
@@ -540,6 +546,8 @@
       cursor: pointer;
       transition: all 0.2s ease;
       min-width: 180px;
+      width: 100%;
+      max-width: 300px;
     }
 
     .filter-select:hover {
@@ -713,6 +721,31 @@
       z-index: 1000;
     }
 
+    /* Hamburger Menu */
+    .hamburger-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.75rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: color 0.2s ease;
+      z-index: 1001;
+    }
+
+    .hamburger-btn:hover {
+      color: var(--accent-indigo);
+    }
+
+    .hamburger-btn i {
+      transition: transform 0.3s ease;
+    }
+
+    .hamburger-btn.active i::before {
+      content: "\F659";
+    }
+
     /* Responsive Design */
     @media (max-width: 1200px) {
       .dashboard-grid {
@@ -722,6 +755,7 @@
       .difficulty-card,
       .activity-card {
         max-width: 100%;
+        width: 100%;
       }
     }
 
@@ -777,12 +811,39 @@
         min-width: 600px;
       }
 
+      .hamburger-btn {
+        display: block;
+      }
+
       .nav-buttons {
-        gap: 0.5rem;
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background-color: var(--bg-card);
+        flex-direction: column;
+        padding: 5rem 1.5rem 2rem;
+        box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        z-index: 1000;
+        gap: 0;
+      }
+
+      .nav-buttons.active {
+        right: 0;
+      }
+
+      .nav-btn {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 1rem 1.25rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
       }
 
       .nav-btn span {
-        display: none;
+        display: inline;
       }
 
       .welcome-title {
@@ -797,6 +858,41 @@
       .heatmap-cell {
         width: 10px;
         height: 10px;
+      }
+
+      .heatmap-container {
+        margin-left: -1.5rem;
+        margin-right: -1.5rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .activity-card {
+        overflow-x: hidden;
+      }
+
+      .search-filter-container {
+        padding: 1rem;
+      }
+
+      .filter-select {
+        min-width: 100%;
+      }
+
+      .filter-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .heatmap-container {
+        margin-left: -1.5rem;
+        margin-right: -1.5rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .activity-card {
+        overflow-x: hidden;
       }
     }
 
@@ -819,10 +915,28 @@
       .difficulty-card,
       .activity-card {
         padding: 1rem;
+        width: 100%;
       }
       
       .card-title {
         font-size: 1rem;
+      }
+
+      .heatmap-grid {
+        grid-template-columns: repeat(53, 8px);
+        gap: 2px;
+      }
+      
+      .heatmap-cell {
+        width: 8px;
+        height: 8px;
+      }
+
+      .heatmap-container {
+        margin-left: -1rem;
+        margin-right: -1rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
       }
 
       .circular-progress {
@@ -866,18 +980,34 @@
         <i class="bi bi-code-square"></i>
         Bhavishyath
       </a>
-      <nav class="nav-buttons">
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle menu">
+        <i class="bi bi-list"></i>
+      </button>
+      <nav class="nav-buttons" id="navMenu">
         <a href="user-dashboard.html" class="nav-btn nav-btn-outline">
           <i class="bi bi-grid-fill"></i>
           <span>Dashboard</span>
         </a>
-        <a href="user-profile.html" class="nav-btn nav-btn-primary">
+        <a href="user-profile.html" class="nav-btn nav-btn-outline">
           <i class="bi bi-person-circle"></i>
           <span>Profile</span>
         </a>
-        <a class="nav-btn nav-btn-primary" href="highlights.html">
-    <i class="bi bi-star-fill"></i> Highlights
-</a>
+        <a href="highlights.html" class="nav-btn nav-btn-outline">
+          <i class="bi bi-star-fill"></i>
+          <span>Highlights</span>
+        </a>
+        <a href="study-materials.html" class="nav-btn nav-btn-outline">
+          <i class="bi bi-book-fill"></i>
+          <span>Study Materials</span>
+        </a>
+        <a href="videos.html" class="nav-btn nav-btn-outline">
+          <i class="bi bi-play-circle-fill"></i>
+          <span>Videos</span>
+        </a>
+        <a href="references.html" class="nav-btn nav-btn-outline">
+          <i class="bi bi-link-45deg"></i>
+          <span>References</span>
+        </a>
         <button id="logoutBtn" class="nav-btn nav-btn-danger">
           <i class="bi bi-box-arrow-right"></i>
           <span>Logout</span>
@@ -1531,6 +1661,33 @@
     }
 
     initDashboard();
+
+    // Hamburger Menu Toggle
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navMenu = document.getElementById('navMenu');
+
+    function openMenu() {
+      navMenu.classList.add('active');
+      hamburgerBtn.classList.add('active');
+    }
+
+    function closeMenu() {
+      navMenu.classList.remove('active');
+      hamburgerBtn.classList.remove('active');
+    }
+
+    hamburgerBtn.addEventListener('click', () => {
+      if (navMenu.classList.contains('active')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+
+    // Close menu when clicking nav links
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', closeMenu);
+    });
   </script>
 </body>
 </html>

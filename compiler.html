@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bhavishyath - Compiler</title>
-  <link rel="icon" href="/bhavishyath_logo.png" type="image/png">
+    <link rel="icon" href="/bhavishyath_logo.png" type="image/png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -19,6 +19,9 @@
             background-color: #1e1e1e;
             color: white;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         /* Header Styles */
@@ -82,6 +85,7 @@
             padding: 0.5rem 0.75rem;
             border-radius: 4px;
             border: 1px solid #555;
+            width: 55%;
         }
 
         .language-selector-header label {
@@ -98,8 +102,9 @@
             padding: 0.5rem 0.75rem;
             border-radius: 4px;
             cursor: pointer;
-            min-width: 120px;
+            min-width: 40px !important;
             font-weight: 500;
+            /* width: 40%; */
         }
 
         #language:focus {
@@ -143,14 +148,16 @@
             transform: translateY(-1px);
             box-shadow: 0 2px 8px rgba(16, 124, 16, 0.3);
         }
+
         .compiler-container {
             display: grid;
             grid-template-columns: 1fr 1.2fr;
             grid-template-rows: auto auto 1fr auto;
-            height: calc(100vh - 80px);
-            /* overflow: hidden; */
+            height: auto;
+            min-height: calc(100vh - 80px - 120px);
             padding: 1.25rem;
             gap: 1.25rem;
+            flex: 1;
         }
 
         /* Problem Section */
@@ -185,10 +192,12 @@
             flex-direction: column;
             gap: 1rem;
             min-height: 0;
-            height: auto;
+            /* height: auto; */
             min-height: 300px;
             grid-column: 2;
             grid-row: 1 / 3;
+            border: solid red;
+            max-height: 420px !important;
         }
 
         .editor-wrapper {
@@ -289,10 +298,39 @@
             border: 1px solid #3e3e42;
             border-radius: 4px;
             padding: 1rem;
-            max-height: 400px;
-            /* overflow-y: auto; */
+            margin-bottom: 1rem !important;
+            height: 400px;
+            min-height: 200px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
             grid-column: 1 / -1;
             grid-row: 4;
+            position: relative;
+            border-bottom: 8px solid #3c3c3c;
+        }
+
+        .solutions-resize-handle {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            cursor: row-resize;
+            background: linear-gradient(to top, #4ec9b0, transparent);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: 100;
+        }
+
+        .solutions-section:hover .solutions-resize-handle {
+            opacity: 0.6;
+        }
+
+        .solutions-resize-handle:hover,
+        .solutions-resize-handle.active {
+            opacity: 1;
+            background: #4ec9b0;
         }
 
         .solutions-header {
@@ -305,6 +343,7 @@
             border-bottom: none;
             cursor: pointer;
             user-select: none;
+            flex-shrink: 0;
         }
 
         .solutions-header-title {
@@ -343,8 +382,9 @@
             margin-top: 1rem;
             padding-top: 1rem;
             border-top: 1px solid #3e3e42;
-            max-height: 200px;
+            flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .solutions-content.show {
@@ -364,6 +404,7 @@
             padding: 0.85rem;
             transition: all 0.2s ease;
             cursor: pointer;
+            /* border: solid red; */
         }
 
         .solution-item:hover {
@@ -407,11 +448,12 @@
             font-family: 'Courier New', monospace;
             font-size: 0.75rem;
             color: #a8d8ea;
-            max-height: 120px;
+            max-height: 500px !important;
             overflow-y: auto;
             white-space: pre-wrap;
             word-wrap: break-word;
             margin-top: 0.5rem;
+
         }
 
         .solution-empty {
@@ -420,6 +462,7 @@
             padding: 1rem;
             font-style: italic;
         }
+
         @media (max-width: 1024px) {
             .compiler-container {
                 grid-template-columns: 1fr;
@@ -435,7 +478,7 @@
             .editor-controls-section {
                 grid-column: 1;
                 grid-row: 2;
-                height: auto;
+                /* height: auto; */
             }
 
             .output-section {
@@ -446,7 +489,14 @@
             .solutions-section {
                 grid-column: 1;
                 grid-row: 5;
-                max-height: 200px;
+                height: 400px;
+                max-height: none;
+                min-height: 200px;
+                resize: vertical;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 1rem !important;
             }
 
             .output-content {
@@ -506,14 +556,14 @@
 
             .editor-controls-section {
                 flex-direction: column;
-                height: auto;
+                height: 30vh;
             }
 
             .editor-wrapper {
                 min-height: 200px;
                 height: 200px;
             }
-            
+
             #editor {
                 height: 200px !important;
                 min-height: 200px;
@@ -562,12 +612,12 @@
                 font-size: 0.9rem;
                 max-height: 200px;
             }
-            
+
             .editor-wrapper {
                 min-height: 180px;
                 height: 180px;
             }
-            
+
             #editor {
                 height: 180px !important;
                 min-height: 180px;
@@ -618,6 +668,100 @@
         .loading {
             opacity: 0.6;
             cursor: not-allowed;
+        }
+
+        /* Footer Styles */
+        footer {
+            background: linear-gradient(135deg, #1e293b 0%, #252526 50%, #1e1e1e 100%);
+            border-top: 1px solid #3e3e42;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            color: #858585;
+            font-size: 0.9rem;
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        footer .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        footer .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4ec9b0;
+            font-weight: 600;
+            font-size: 1rem;
+            justify-content: center;
+        }
+
+        footer .footer-brand i {
+            font-size: 1.25rem;
+        }
+
+        footer .footer-divider {
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4ec9b0, transparent);
+            margin: 0.5rem 0;
+        }
+
+        footer .footer-text {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        footer .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        footer .footer-links a {
+            color: #858585;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        footer .footer-links a:hover {
+            color: #4ec9b0;
+            text-shadow: 0 0 8px rgba(78, 201, 176, 0.3);
+        }
+
+        footer .footer-bottom {
+            font-size: 0.85rem;
+            color: #475569;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #334155;
+        }
+
+        footer .copyright-icon {
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            footer {
+                padding: 1.5rem 1rem;
+            }
+
+            footer .footer-links {
+                gap: 1rem;
+                font-size: 0.85rem;
+            }
+
+            footer .footer-brand {
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
@@ -687,7 +831,7 @@
         </div>
 
         <!-- Solutions Section -->
-        <div class="solutions-section">
+        <div class="solutions-section" id="solutionsSection">
             <div class="solutions-header" onclick="toggleSolutions()">
                 <div class="solutions-header-title">
                     <h3><i class="bi bi-checkmark-circle-fill"></i> Solved Solutions</h3>
@@ -699,9 +843,11 @@
             </div>
             <div class="solutions-content" id="solutionsContent">
                 <div class="solutions-list" id="solutionsList">
-                    <div class="solution-empty">No correct submissions yet. Solve the problem to see solutions here!</div>
+                    <div class="solution-empty">No correct submissions yet. Solve the problem to see solutions here!
+                    </div>
                 </div>
             </div>
+            <div class="solutions-resize-handle"></div>
         </div>
     </div>
 
@@ -787,7 +933,7 @@ main();`
         window.toggleSolutions = function () {
             const content = document.getElementById('solutionsContent');
             const toggle = document.getElementById('solutionsToggle');
-            
+
             content.classList.toggle('show');
             toggle.classList.toggle('open');
         };
@@ -827,11 +973,11 @@ main();`
             const dbLang = data.language_id || data.language || "3";
             const problemLang = convertDatabaseLangToPiston(dbLang);
             console.log("Database language:", dbLang, "Converting to Piston format:", problemLang);
-            
+
             document.getElementById("language").value = problemLang;
             localStorage.setItem("selected_language", problemLang);
             console.log("Language dropdown set to:", document.getElementById("language").value);
-            
+
             initializeMonacoEditor(problemLang);
             loadSolutions();
         }
@@ -842,7 +988,7 @@ main();`
             require(['vs/editor/editor.main'], function () {
                 const monacoLang = mapLangIdToMonaco(langId);
                 const boilerplateCode = BOILERPLATE[langId] || BOILERPLATE['54'];
-                
+
                 editor = monaco.editor.create(document.getElementById('editor'), {
                     value: boilerplateCode,
                     language: monacoLang,
@@ -863,14 +1009,14 @@ main();`
                     localStorage.setItem("selected_language", langId);
                     const monacoLang = mapLangIdToMonaco(langId);
                     const newBoilerplate = BOILERPLATE[langId] || BOILERPLATE['54'];
-                    
+
                     editor.setValue(newBoilerplate);
                     monaco.editor.setModelLanguage(editor.getModel(), monacoLang);
-                    
+
                     // Place cursor in editable region
                     editor.setPosition({ lineNumber: getEditableLineNumber(langId), column: 1 });
                     editor.focus();
-                    
+
                     isSaved = false;
                     localStorage.setItem("saved_code", newBoilerplate);
                 });
@@ -1019,22 +1165,18 @@ main();`
                     </div>
                 `;
             }).join('');
-
-            // Auto-open solutions when there are some
-            solutionsContent.classList.add('show');
-            document.getElementById('solutionsToggle').classList.add('open');
         }
 
         // Helper function to format time ago
         function getTimeAgo(date) {
             const now = new Date();
             const seconds = Math.floor((now - date) / 1000);
-            
+
             if (seconds < 60) return 'just now';
             if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
             if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
             if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
-            
+
             return date.toLocaleDateString();
         }
 
@@ -1171,7 +1313,7 @@ main();`
             const code = editor.getValue();
             localStorage.setItem("saved_code", code);
             isSaved = true;
-            
+
             // Show feedback
             const saveBtn = document.querySelector('.btn-save');
             const originalText = saveBtn.innerHTML;
@@ -1191,8 +1333,71 @@ main();`
             }
         });
 
+        // ===== SOLUTIONS SECTION RESIZE HANDLE =====
+        const solutionsSection = document.getElementById('solutionsSection');
+        const resizeHandle = document.querySelector('.solutions-resize-handle');
+        let isResizing = false;
+        let startY = 0;
+        let startHeight = 0;
+
+        resizeHandle.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            startY = e.clientY;
+            startHeight = solutionsSection.offsetHeight;
+            resizeHandle.classList.add('active');
+            document.body.style.userSelect = 'none';
+            document.body.style.cursor = 'row-resize';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+
+            const delta = e.clientY - startY;
+            const newHeight = startHeight + delta;
+
+            // Constrain height between min and reasonable max
+            if (newHeight >= 200 && newHeight <= 800) {
+                solutionsSection.style.height = newHeight + 'px';
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            resizeHandle.classList.remove('active');
+            document.body.style.userSelect = '';
+            document.body.style.cursor = '';
+        });
+
 
     </script>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="bi bi-code-square"></i>
+                <span>Bhavishyath</span>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-text">
+                Master coding, one problem at a time
+            </div>
+            <div class="footer-links">
+                <a href="user-dashboard.html" title="Dashboard">
+                    <i class="bi bi-house"></i> Dashboard
+                </a>
+                <a href="highlights.html" title="Highlights">
+                    <i class="bi bi-star"></i> Highlights
+                </a>
+                <a href="user-profile.html" title="Profile">
+                    <i class="bi bi-person"></i> Profile
+                </a>
+            </div>
+            <div class="footer-bottom">
+                <span class="copyright-icon">©</span> 2026 Bhavishyath. All rights reserved. | Built with <span style="color: #ef4444;">❤</span> for coders
+            </div>
+        </div>
+    </footer>
+
 </body>
 
 </html>

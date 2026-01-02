@@ -329,6 +329,31 @@
       cursor: not-allowed;
     }
 
+    /* Hamburger Menu */
+    .hamburger-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.75rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: color 0.2s ease;
+      z-index: 1001;
+    }
+
+    .hamburger-btn:hover {
+      color: var(--accent-blue);
+    }
+
+    .hamburger-btn i {
+      transition: transform 0.3s ease;
+    }
+
+    .hamburger-btn.active i::before {
+      content: "\F659";
+    }
+
     /* Success Message */
     .success-message {
       display: none;
@@ -372,12 +397,43 @@
         padding: 0 1rem;
       }
 
+      .hamburger-btn {
+        display: block;
+      }
+
       .nav-links {
-        gap: 1rem;
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background-color: var(--white);
+        flex-direction: column;
+        padding: 5rem 1.5rem 2rem;
+        box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        z-index: 1000;
+        gap: 0;
+      }
+
+      .nav-links.active {
+        right: 0;
+      }
+
+      .nav-link {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        transition: background-color 0.2s ease;
+      }
+
+      .nav-link:hover {
+        background-color: var(--light-gray);
       }
 
       .nav-link span {
-        display: none;
+        display: inline;
       }
 
       .main-container {
@@ -436,7 +492,10 @@
   <header class="header">
     <div class="header-content">
       <a href="user-dashboard.html" class="logo">Bhavishyath</a>
-      <nav class="nav-links">
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle menu">
+        <i class="bi bi-list"></i>
+      </button>
+      <nav class="nav-links" id="navMenu">
         <a href="user-dashboard.html" class="nav-link">
           <i class="bi bi-grid-fill"></i>
           <span>Dashboard</span>
@@ -729,6 +788,33 @@
 
     // Initialize
     loadProfile();
+
+    // Hamburger Menu Toggle
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navMenu = document.getElementById('navMenu');
+
+    function openMenu() {
+      navMenu.classList.add('active');
+      hamburgerBtn.classList.add('active');
+    }
+
+    function closeMenu() {
+      navMenu.classList.remove('active');
+      hamburgerBtn.classList.remove('active');
+    }
+
+    hamburgerBtn.addEventListener('click', () => {
+      if (navMenu.classList.contains('active')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+
+    // Close menu when clicking nav links
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
   </script>
 </body>
 

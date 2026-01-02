@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Tutorials - Bhavishyath</title>
+  <link rel="icon" href="/bhavishyath_logo.png" type="image/png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="videos.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <a href="user-dashboard.html" class="logo">
+        <i class="bi bi-code-square"></i>
+        Bhavishyath
+      </a>
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle menu">
+        <i class="bi bi-list"></i>
+      </button>
+      <nav class="nav-buttons" id="navMenu">
+        <a class="nav-btn nav-btn-outline" href="user-dashboard.html">
+          <i class="bi bi-grid-fill"></i>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-btn nav-btn-outline" href="compiler.html">
+          <i class="bi bi-code-slash"></i>
+          <span>Compiler</span>
+        </a>
+        <a class="nav-btn nav-btn-outline" href="study-materials.html">
+          <i class="bi bi-book-fill"></i>
+          <span>Study Materials</span>
+        </a>
+        <a class="nav-btn nav-btn-primary active" href="videos.html">
+          <i class="bi bi-play-circle-fill"></i>
+          <span>Videos</span>
+        </a>
+        <a class="nav-btn nav-btn-outline" href="references.html">
+          <i class="bi bi-bookmark-fill"></i>
+          <span>References</span>
+        </a>
+        <a class="nav-btn nav-btn-outline" href="highlights.html">
+          <i class="bi bi-star-fill"></i>
+          <span>Highlights</span>
+        </a>
+        <button id="logoutBtn" class="nav-btn nav-btn-danger">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Logout</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="main-container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="header-left">
+        <h1 class="page-title">Video Tutorials</h1>
+        <p class="page-subtitle">Learn through comprehensive video courses and tutorials</p>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn" id="savedVideosBtn" title="Saved Videos">
+          <i class="bi bi-bookmark-fill"></i>
+          <span class="badge" id="savedCount">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="search-filter-section">
+      <div class="search-bar">
+        <i class="bi bi-search search-icon"></i>
+        <input 
+          type="text" 
+          id="searchInput" 
+          class="search-input" 
+          placeholder="Search videos by title, instructor, or topic..."
+          aria-label="Search videos"
+        >
+      </div>
+      
+      <div class="filter-chips">
+        <button class="filter-chip active" data-category="all">
+          <i class="bi bi-grid-3x3-gap"></i>
+          All
+        </button>
+        <button class="filter-chip" data-category="dsa">
+          <i class="bi bi-diagram-3"></i>
+          Data Structures
+        </button>
+        <button class="filter-chip" data-category="algorithms">
+          <i class="bi bi-cpu"></i>
+          Algorithms
+        </button>
+        <button class="filter-chip" data-category="java">
+          <i class="bi bi-cup-hot"></i>
+          Java
+        </button>
+        <button class="filter-chip" data-category="python">
+          <i class="bi bi-code-square"></i>
+          Python
+        </button>
+        <button class="filter-chip" data-category="web">
+          <i class="bi bi-globe"></i>
+          Web Dev
+        </button>
+        <button class="filter-chip" data-category="system-design">
+          <i class="bi bi-boxes"></i>
+          System Design
+        </button>
+      </div>
+
+      <div class="sort-options">
+        <label for="sortSelect">Sort by:</label>
+        <select id="sortSelect" class="sort-select">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="duration-short">Duration: Short to Long</option>
+          <option value="duration-long">Duration: Long to Short</option>
+          <option value="title">Title (A-Z)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <i class="bi bi-collection-play"></i>
+        <span id="totalVideos">0</span> Videos
+      </div>
+      <div class="stat-item">
+        <i class="bi bi-clock-history"></i>
+        <span id="totalDuration">0h 0m</span> Total Duration
+      </div>
+      <div class="stat-item">
+        <i class="bi bi-eye"></i>
+        <span id="watchedCount">0</span> Watched
+      </div>
+    </div>
+
+    <!-- Videos Grid -->
+    <div id="videosContainer" class="videos-grid">
+      <!-- Skeleton Loaders (shown while loading) -->
+      <div class="video-skeleton"></div>
+      <div class="video-skeleton"></div>
+      <div class="video-skeleton"></div>
+      <div class="video-skeleton"></div>
+      <div class="video-skeleton"></div>
+      <div class="video-skeleton"></div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <i class="bi bi-film"></i>
+      <h3>No videos found</h3>
+      <p>Try adjusting your search or filter criteria</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="error-state" style="display: none;">
+      <i class="bi bi-exclamation-triangle"></i>
+      <h3>Failed to load videos</h3>
+      <p>There was an error loading the video content</p>
+      <button class="retry-btn" id="retryBtn">
+        <i class="bi bi-arrow-clockwise"></i>
+        Retry
+      </button>
+    </div>
+  </div>
+
+  <!-- Video Modal -->
+  <div id="videoModal" class="video-modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <button class="modal-close" id="closeModal" aria-label="Close modal">
+        <i class="bi bi-x-lg"></i>
+      </button>
+      <div class="modal-header">
+        <h2 id="modalTitle">Video Title</h2>
+        <div class="modal-actions">
+          <button class="action-btn" id="saveVideoBtn" title="Save for later">
+            <i class="bi bi-bookmark"></i>
+          </button>
+          <button class="action-btn" id="shareVideoBtn" title="Share">
+            <i class="bi bi-share"></i>
+          </button>
+        </div>
+      </div>
+      <div class="video-player-container">
+        <div id="videoPlayer" class="video-player"></div>
+      </div>
+      <div class="modal-info">
+        <div class="info-row">
+          <span class="info-label"><i class="bi bi-person"></i> Instructor:</span>
+          <span id="modalInstructor">-</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="bi bi-clock"></i> Duration:</span>
+          <span id="modalDuration">-</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="bi bi-calendar"></i> Published:</span>
+          <span id="modalPublished">-</span>
+        </div>
+      </div>
+      <div class="modal-description">
+        <h4>About this video</h4>
+        <p id="modalDescription">-</p>
+      </div>
+      <div class="modal-tags" id="modalTags"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <i class="bi bi-check-circle"></i>
+    <span id="toastMessage">Action completed</span>
+  </div>
+
+  <!-- <script type="module" src="videos.js"></script> -->
+  <script type="module">
+
+   /* ================================================
+   VIDEO TUTORIALS PAGE JAVASCRIPT
+   Handles video loading, filtering, modal, and interactions
+   ================================================ */
+
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+const supabase = createClient(
+  "https://cfajcmbhspradnvofbgb.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmYWpjbWJoc3ByYWRudm9mYmdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzMDI0MDQsImV4cCI6MjA2OTg3ODQwNH0.mlq67ZmdeE_3_sPXY17JLd9xJ8KGDnR3eiJ9LoO9NUE"
+);
+
+// ================================================
+// STATE MANAGEMENT
+// ================================================
+
+let allVideos = [];
+let filteredVideos = [];
+let currentCategory = 'all';
+let currentSort = 'newest';
+let savedVideos = JSON.parse(localStorage.getItem('savedVideos')) || [];
+let watchedVideos = JSON.parse(localStorage.getItem('watchedVideos')) || [];
+
+// ================================================
+// SAMPLE DATA (Replace with Supabase call)
+// ================================================
+
+const SAMPLE_VIDEOS = [
+  {
+    id: 'v1',
+    title: 'Complete Data Structures and Algorithms Course',
+    instructor: 'Abdul Bari',
+    duration: '12:45:30',
+    category: 'dsa',
+    tags: ['DSA', 'Algorithms', 'Beginner'],
+    thumbnail: 'https://i.ytimg.com/vi/0IAPZzGSbME/maxresdefault.jpg',
+    videoUrl: 'https://www.youtube.com/embed/0IAPZzGSbME',
+    description: 'Master Data Structures & Algorithms from scratch. This comprehensive course covers arrays, linked lists, stacks, queues, trees, graphs, sorting, searching, and dynamic programming.',
+    publishedDate: '2023-06-15',
+    durationSeconds: 45930
+  },
+  {
+    id: 'v2',
+    title: 'Java Programming Full Course',
+    instructor: 'Telusko',
+    duration: '10:15:00',
+    category: 'java',
+    tags: ['Java', 'OOP', 'Beginner'],
+    thumbnail: 'https://i.ytimg.com/vi/ntLJmHOJ0ME/maxresdefault.jpg',
+    videoUrl: 'https://www.youtube.com/embed/ntLJmHOJ0ME',
+    description: 'Learn Java programming from basics to advanced concepts. Covers OOP, Collections, Multithreading, JDBC, and more.',
+    publishedDate: '2023-08-20',
+    durationSeconds: 36900
+  },
+  {
+    id: 'v3',
+    title: 'Python for Beginners - Complete Course',
+    instructor: 'Programming with Mosh',
+    duration: '6:14:07',
+    category: 'python',
+    tags: ['Python', 'Beginner', 'Programming'],
+    thumbnail: 'https://i.ytimg.com/vi/_uQrJ0TkZlc/maxresdefault.jpg',
+    videoUrl: 'https://www.youtube.com/embed/_uQrJ0TkZlc',
+    description: 'Learn Python programming from scratch with this comprehensive beginner-friendly course. Perfect for those new to programming.',
+    publishedDate: '2023-03-10',
+    durationSeconds: 22447
+  },
+  {
+    id: 'v4',
+    title: 'System Design Interview Preparation',
+    instructor: 'Gaurav Sen',
+    duration: '8:30:00',
+    category: 'system-design',
+    tags: ['System Design', 'Interview', 'Advanced'],
+    thumbnail: 'https://i.ytimg.com/vi/xpDnVSmNFX0/maxresdefault.jpg',
+    videoUrl: 'https://www.youtube.com/embed/xpDnVSmNFX0',
+    description: 'Master system design concepts for technical interviews. Learn to design scalable systems like URL shorteners, chat apps, and distributed systems.',
+    publishedDate: '2023-09-05',
+    durationSeconds: 30600
+  },
+  {
+    id: 'v5',
+    title: 'Web Development Full Course - HTML, CSS, JavaScript',
+    instructor: 'freeCodeCamp',
+    duration: '11:30:00',
+    category: 'web',
+    tags: ['HTML', 'CSS', 'JavaScript', 'Web Dev'],
+    thumbnail: 'https://i.ytimg.com/vi/mU6anWqZJcc/maxresdefault.jpg',
+    videoUrl: 'https://www.youtube.com/embed/mU6anWqZJcc',
+    description: 'Complete web development bootcamp covering HTML, CSS, and JavaScript. Build real projects and become job-ready.',
+    publishedDate: '2023-07-12',
+    durationSeconds: 41400
+  },
+  {
+    id: 'v6',
+    title: 'Dynamic Programming Masterclass',
+    instructor: 'Aditya Verma',
+    duration: '5:45:20',
+    category: 'algorithms',
+    tags: ['DP', 'Algorithms', 'Advanced'],
+    thumbnail: 'https://i.ytimg.com/vi/nqowUJzG-iM/maxresdefault.jpg',
+    videoUrl: 'https://www.youtube.com/embed/nqowUJzG-iM',
+    description: 'Master dynamic programming with patterns and problem-solving techniques. Covers all major DP patterns used in coding interviews.',
+    publishedDate: '2023-05-18',
+    durationSeconds: 20720
+  },
+  {
+    id: 'v7',
+    title: 'Graph Algorithms for Coding Interviews',
+    instructor: 'William Fiset',
+    duration: '4:20:00',
+    category: 'algorithms',
+    tags: ['Graphs', 'Algorithms', 'Intermediate'],
+    thumbnail: 'https://i.ytimg.com/vi/09_LlHjoEiY/maxresdefault.jpg',
+    videoUrl: 'https://www.youtube.com/embed/09_LlHjoEiY',
+    description: 'Deep dive into graph algorithms including BFS, DFS, Dijkstra, Bellman-Ford, Floyd-Warshall, and topological sort.',
+    publishedDate: '2023-04-22',
+    durationSeconds: 15600
+  },
+  {
+    id: 'v8',
+    title: 'Java Collections Framework',
+    instructor: 'Defog Tech',
+    duration: '3:15:30',
+    category: 'java',
+    tags: ['Java', 'Collections', 'Intermediate'],
+    thumbnail: 'https://i.ytimg.com/vi/GdAon80-0KA/maxresdefault.jpg',
+    videoUrl: 'https://www.youtube.com/embed/GdAon80-0KA',
+    description: 'Complete guide to Java Collections Framework including List, Set, Map, Queue, and their implementations.',
+    publishedDate: '2023-06-30',
+    durationSeconds: 11730
+  }
+];
+
+// ================================================
+// DOM ELEMENTS
+// ================================================
+
+const videosContainer = document.getElementById('videosContainer');
+const searchInput = document.getElementById('searchInput');
+const filterChips = document.querySelectorAll('.filter-chip');
+const sortSelect = document.getElementById('sortSelect');
+const emptyState = document.getElementById('emptyState');
+const errorState = document.getElementById('errorState');
+const retryBtn = document.getElementById('retryBtn');
+const videoModal = document.getElementById('videoModal');
+const closeModalBtn = document.getElementById('closeModal');
+const savedVideosBtn = document.getElementById('savedVideosBtn');
+const savedCount = document.getElementById('savedCount');
+const totalVideosSpan = document.getElementById('totalVideos');
+const totalDurationSpan = document.getElementById('totalDuration');
+const watchedCountSpan = document.getElementById('watchedCount');
+const logoutBtn = document.getElementById('logoutBtn');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const navMenu = document.getElementById('navMenu');
+const toast = document.getElementById('toast');
+const toastMessage = document.getElementById('toastMessage');
+
+// ================================================
+// INITIALIZATION
+// ================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+  checkAuth();
+  loadVideos();
+  setupEventListeners();
+  updateSavedCount();
+  setupHamburgerMenu();
+});
+
+// ================================================
+// AUTH CHECK
+// ================================================
+
+function checkAuth() {
+  const userId = localStorage.getItem('user_id');
+  if (!userId) {
+    window.location.href = 'user-login.html';
+  }
+}
+
+// ================================================
+// LOAD VIDEOS
+// ================================================
+
+async function loadVideos() {
+  try {
+    videosContainer.innerHTML = '<div class="video-skeleton"></div><div class="video-skeleton"></div><div class="video-skeleton"></div><div class="video-skeleton"></div><div class="video-skeleton"></div><div class="video-skeleton"></div>';
+    
+    console.log('📹 Attempting to load videos from Supabase...');
+    
+    // Try to fetch from Supabase (will fail if table doesn't exist or auth fails - that's OK)
+    let shouldUseSampleData = false;
+    
+    try {
+      const { data, error } = await supabase
+        .from('videos')
+        .select('*')
+        .eq('is_published', true)
+        .order('published_date', { ascending: false });
+      
+      if (error) {
+        console.warn('⚠️ Supabase Error (401):', error.message);
+        console.log('ℹ️ This is normal if the videos table doesn\'t exist yet');
+        shouldUseSampleData = true;
+      } else if (data && data.length > 0) {
+        console.log(`✅ Loaded ${data.length} videos from Supabase`);
+        // Transform data from Supabase format
+        allVideos = data.map(video => ({
+          id: video.id,
+          title: video.title,
+          instructor: video.instructor,
+          duration: video.duration,
+          category: video.category,
+          tags: video.tags || [],
+          thumbnail: video.thumbnail_url,
+          videoUrl: video.video_url,
+          description: video.description,
+          publishedDate: video.published_date,
+          durationSeconds: video.duration_seconds
+        }));
+      } else {
+        console.log('📺 No videos in Supabase, using sample data');
+        shouldUseSampleData = true;
+      }
+    } catch (supabaseError) {
+      console.warn('⚠️ Supabase Connection Error:', supabaseError.message);
+      console.log('ℹ️ Using sample data. To setup real data: Run VIDEOS_SCHEMA.sql in Supabase SQL Editor');
+      shouldUseSampleData = true;
+    }
+    
+    // Use sample data if needed
+    if (shouldUseSampleData) {
+      console.log('📺 Loading sample data for demonstration...');
+      allVideos = SAMPLE_VIDEOS;
+    }
+    
+    // Ensure we have videos
+    if (allVideos.length === 0) {
+      console.error('❌ No videos available');
+      showError();
+      return;
+    }
+    
+    console.log(`✨ Ready to display ${allVideos.length} videos`);
+    filteredVideos = [...allVideos];
+    renderVideos();
+    updateStats();
+  } catch (error) {
+    console.error('❌ Unexpected error in loadVideos():', error);
+    console.log('📺 Using sample data as final fallback');
+    allVideos = SAMPLE_VIDEOS;
+    filteredVideos = [...allVideos];
+    renderVideos();
+    updateStats();
+  }
+}
+
+// ================================================
+// RENDER VIDEOS
+// ================================================
+
+function renderVideos() {
+  videosContainer.innerHTML = '';
+  
+  if (filteredVideos.length === 0) {
+    emptyState.style.display = 'block';
+    errorState.style.display = 'none';
+    return;
+  }
+  
+  emptyState.style.display = 'none';
+  errorState.style.display = 'none';
+  
+  filteredVideos.forEach((video, index) => {
+    const videoCard = createVideoCard(video, index);
+    videosContainer.appendChild(videoCard);
+  });
+  
+  // Setup Intersection Observer for lazy loading
+  setupLazyLoading();
+}
+
+// ================================================
+// CREATE VIDEO CARD
+// ================================================
+
+function createVideoCard(video, index) {
+  const card = document.createElement('div');
+  card.className = 'video-card';
+  card.setAttribute('data-video-id', video.id);
+  card.style.opacity = '0';
+  card.style.animation = `fadeIn 0.5s ease forwards ${index * 0.05}s`;
+  
+  const isWatched = watchedVideos.includes(video.id);
+  const isSaved = savedVideos.includes(video.id);
+  
+  card.innerHTML = `
+    <div class="video-thumbnail">
+      <img 
+        data-src="${video.thumbnail}" 
+        alt="${video.title}"
+        class="lazy-load"
+      >
+      <div class="video-duration">${video.duration}</div>
+      ${isWatched ? '<div class="video-watched-badge"><i class="bi bi-check-circle-fill"></i> Watched</div>' : ''}
+      <div class="play-overlay">
+        <i class="bi bi-play-fill"></i>
+      </div>
+    </div>
+    <div class="video-content">
+      <h3 class="video-title">${video.title}</h3>
+      <div class="video-instructor">
+        <i class="bi bi-person"></i>
+        ${video.instructor}
+      </div>
+      <div class="video-tags">
+        ${video.tags.map(tag => `<span class="video-tag">${tag}</span>`).join('')}
+      </div>
+      <div class="video-footer">
+        <span class="video-date">${formatDate(video.publishedDate)}</span>
+        <button class="save-btn ${isSaved ? 'saved' : ''}" data-video-id="${video.id}">
+          <i class="bi ${isSaved ? 'bi-bookmark-fill' : 'bi-bookmark'}"></i>
+        </button>
+      </div>
+    </div>
+  `;
+  
+  // Add click event to open modal
+  card.addEventListener('click', (e) => {
+    if (!e.target.closest('.save-btn')) {
+      openVideoModal(video);
+    }
+  });
+  
+  // Add save button event
+  const saveBtn = card.querySelector('.save-btn');
+  saveBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleSaveVideo(video.id);
+  });
+  
+  return card;
+}
+
+// ================================================
+// LAZY LOADING
+// ================================================
+
+function setupLazyLoading() {
+  const images = document.querySelectorAll('.lazy-load');
+  
+  const imageObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        img.src = img.dataset.src;
+        img.classList.remove('lazy-load');
+        observer.unobserve(img);
+      }
+    });
+  });
+  
+  images.forEach(img => imageObserver.observe(img));
+}
+
+// ================================================
+// VIDEO MODAL
+// ================================================
+
+function openVideoModal(video) {
+  // Mark as watched
+  if (!watchedVideos.includes(video.id)) {
+    watchedVideos.push(video.id);
+    localStorage.setItem('watchedVideos', JSON.stringify(watchedVideos));
+    updateStats();
+  }
+  
+  // Save last watched
+  localStorage.setItem('lastWatchedVideo', video.id);
+  
+  // Populate modal
+  document.getElementById('modalTitle').textContent = video.title;
+  document.getElementById('modalInstructor').textContent = video.instructor;
+  document.getElementById('modalDuration').textContent = video.duration;
+  document.getElementById('modalPublished').textContent = formatDate(video.publishedDate);
+  document.getElementById('modalDescription').textContent = video.description;
+  
+  // Render tags
+  const modalTags = document.getElementById('modalTags');
+  modalTags.innerHTML = video.tags.map(tag => 
+    `<span class="modal-tag">${tag}</span>`
+  ).join('');
+  
+  // Load video
+  const videoPlayer = document.getElementById('videoPlayer');
+  videoPlayer.innerHTML = `
+    <iframe 
+      src="${video.videoUrl}?autoplay=1" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+      allowfullscreen
+    ></iframe>
+  `;
+  
+  // Update save button
+  const saveVideoBtn = document.getElementById('saveVideoBtn');
+  const isSaved = savedVideos.includes(video.id);
+  saveVideoBtn.innerHTML = `<i class="bi ${isSaved ? 'bi-bookmark-fill' : 'bi-bookmark'}"></i>`;
+  saveVideoBtn.onclick = () => {
+    toggleSaveVideo(video.id);
+    const newIsSaved = savedVideos.includes(video.id);
+    saveVideoBtn.innerHTML = `<i class="bi ${newIsSaved ? 'bi-bookmark-fill' : 'bi-bookmark'}"></i>`;
+  };
+  
+  // Setup share button
+  document.getElementById('shareVideoBtn').onclick = () => shareVideo(video);
+  
+  // Show modal
+  videoModal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeVideoModal() {
+  videoModal.classList.remove('active');
+  document.body.style.overflow = '';
+  
+  // Stop video
+  const videoPlayer = document.getElementById('videoPlayer');
+  videoPlayer.innerHTML = '';
+}
+
+// ================================================
+// SAVE/BOOKMARK VIDEO
+// ================================================
+
+function toggleSaveVideo(videoId) {
+  const index = savedVideos.indexOf(videoId);
+  
+  if (index > -1) {
+    savedVideos.splice(index, 1);
+    showToast('Video removed from saved');
+  } else {
+    savedVideos.push(videoId);
+    showToast('Video saved for later');
+  }
+  
+  localStorage.setItem('savedVideos', JSON.stringify(savedVideos));
+  updateSavedCount();
+  
+  // Update UI
+  renderVideos();
+}
+
+function updateSavedCount() {
+  savedCount.textContent = savedVideos.length;
+}
+
+// ================================================
+// SHARE VIDEO
+// ================================================
+
+function shareVideo(video) {
+  const shareData = {
+    title: video.title,
+    text: `Check out this video: ${video.title} by ${video.instructor}`,
+    url: window.location.href + '?video=' + video.id
+  };
+  
+  if (navigator.share) {
+    navigator.share(shareData).catch(() => {});
+  } else {
+    // Fallback: copy link
+    navigator.clipboard.writeText(shareData.url);
+    showToast('Link copied to clipboard');
+  }
+}
+
+// ================================================
+// FILTERING & SORTING
+// ================================================
+
+function applyFilters() {
+  let results = [...allVideos];
+  
+  // Apply category filter
+  if (currentCategory !== 'all') {
+    results = results.filter(v => v.category === currentCategory);
+  }
+  
+  // Apply search filter
+  const searchTerm = searchInput.value.toLowerCase().trim();
+  if (searchTerm) {
+    results = results.filter(v => 
+      v.title.toLowerCase().includes(searchTerm) ||
+      v.instructor.toLowerCase().includes(searchTerm) ||
+      v.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+    );
+  }
+  
+  // Apply sorting
+  results = sortVideos(results, currentSort);
+  
+  filteredVideos = results;
+  renderVideos();
+  updateStats();
+}
+
+function sortVideos(videos, sortType) {
+  const sorted = [...videos];
+  
+  switch (sortType) {
+    case 'newest':
+      return sorted.sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
+    case 'oldest':
+      return sorted.sort((a, b) => new Date(a.publishedDate) - new Date(b.publishedDate));
+    case 'duration-short':
+      return sorted.sort((a, b) => a.durationSeconds - b.durationSeconds);
+    case 'duration-long':
+      return sorted.sort((a, b) => b.durationSeconds - a.durationSeconds);
+    case 'title':
+      return sorted.sort((a, b) => a.title.localeCompare(b.title));
+    default:
+      return sorted;
+  }
+}
+
+// ================================================
+// UPDATE STATS
+// ================================================
+
+function updateStats() {
+  totalVideosSpan.textContent = filteredVideos.length;
+  
+  // Calculate total duration
+  const totalSeconds = filteredVideos.reduce((sum, v) => sum + v.durationSeconds, 0);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  totalDurationSpan.textContent = `${hours}h ${minutes}m`;
+  
+  // Watched count
+  const watchedInFiltered = filteredVideos.filter(v => watchedVideos.includes(v.id)).length;
+  watchedCountSpan.textContent = watchedInFiltered;
+}
+
+// ================================================
+// EVENT LISTENERS
+// ================================================
+
+function setupEventListeners() {
+  // Search
+  searchInput.addEventListener('input', debounce(applyFilters, 300));
+  
+  // Category filters
+  filterChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      filterChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentCategory = chip.dataset.category;
+      applyFilters();
+    });
+  });
+  
+  // Sort
+  sortSelect.addEventListener('change', (e) => {
+    currentSort = e.target.value;
+    applyFilters();
+  });
+  
+  // Modal close
+  closeModalBtn.addEventListener('click', closeVideoModal);
+  
+  document.querySelector('.modal-overlay').addEventListener('click', closeVideoModal);
+  
+  // ESC key to close modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && videoModal.classList.contains('active')) {
+      closeVideoModal();
+    }
+  });
+  
+  // Retry button
+  retryBtn.addEventListener('click', () => {
+    errorState.style.display = 'none';
+    loadVideos();
+  });
+  
+  // Saved videos button
+  savedVideosBtn.addEventListener('click', showSavedVideos);
+  
+  // Logout
+  logoutBtn.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    localStorage.clear();
+    window.location.href = 'user-login.html';
+  });
+}
+
+// ================================================
+// HAMBURGER MENU
+// ================================================
+
+function setupHamburgerMenu() {
+  function openMenu() {
+    navMenu.classList.add('active');
+    hamburgerBtn.classList.add('active');
+  }
+
+  function closeMenu() {
+    navMenu.classList.remove('active');
+    hamburgerBtn.classList.remove('active');
+  }
+
+  hamburgerBtn.addEventListener('click', () => {
+    if (navMenu.classList.contains('active')) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  });
+
+  // Close menu when clicking nav links
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', closeMenu);
+  });
+}
+
+// ================================================
+// SHOW SAVED VIDEOS
+// ================================================
+
+function showSavedVideos() {
+  if (savedVideos.length === 0) {
+    showToast('No saved videos yet');
+    return;
+  }
+  
+  filteredVideos = allVideos.filter(v => savedVideos.includes(v.id));
+  renderVideos();
+  updateStats();
+  
+  // Update filter chips
+  filterChips.forEach(c => c.classList.remove('active'));
+  currentCategory = 'all';
+  
+  showToast(`Showing ${savedVideos.length} saved videos`);
+}
+
+// ================================================
+// SHOW ERROR
+// ================================================
+
+function showError() {
+  videosContainer.innerHTML = '';
+  emptyState.style.display = 'none';
+  errorState.style.display = 'block';
+}
+
+// ================================================
+// TOAST NOTIFICATION
+// ================================================
+
+function showToast(message) {
+  toastMessage.textContent = message;
+  toast.classList.add('show');
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+// ================================================
+// UTILITY FUNCTIONS
+// ================================================
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffTime = Math.abs(now - date);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  if (diffDays < 7) {
+    return `${diffDays} days ago`;
+  } else if (diffDays < 30) {
+    const weeks = Math.floor(diffDays / 7);
+    return `${weeks} ${weeks === 1 ? 'week' : 'weeks'} ago`;
+  } else if (diffDays < 365) {
+    const months = Math.floor(diffDays / 30);
+    return `${months} ${months === 1 ? 'month' : 'months'} ago`;
+  } else {
+    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  }
+}
+
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+// Add fade-in animation
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
+document.head.appendChild(style);
+
+
+  </script>
+</body>
+</html>

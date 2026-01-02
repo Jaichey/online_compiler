@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Materials - Bhavishyath</title>
+  <link rel="icon" href="/bhavishyath_logo.png" type="image/png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="study-materials.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <a href="user-dashboard.html" class="logo">
+        <i class="bi bi-code-square"></i>
+        Bhavishyath
+      </a>
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle menu">
+        <i class="bi bi-list"></i>
+      </button>
+      <nav class="nav-buttons" id="navMenu">
+        <a href="user-dashboard.html" class="nav-btn nav-btn-outline">
+          <i class="bi bi-grid-fill"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="user-profile.html" class="nav-btn nav-btn-outline">
+          <i class="bi bi-person-circle"></i>
+          <span>Profile</span>
+        </a>
+        <a href="highlights.html" class="nav-btn nav-btn-outline">
+          <i class="bi bi-star-fill"></i>
+          <span>Highlights</span>
+        </a>
+        <a href="study-materials.html" class="nav-btn nav-btn-primary">
+          <i class="bi bi-book-fill"></i>
+          <span>Study Materials</span>
+        </a>
+        <a href="videos.html" class="nav-btn nav-btn-outline">
+          <i class="bi bi-play-circle-fill"></i>
+          <span>Videos</span>
+        </a>
+        <a href="references.html" class="nav-btn nav-btn-outline">
+          <i class="bi bi-link-45deg"></i>
+          <span>References</span>
+        </a>
+        <button id="logoutBtn" class="nav-btn nav-btn-danger">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Logout</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="main-container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">Study Materials</h1>
+      <p class="page-subtitle">Curated resources to help you master programming concepts</p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+      <div class="search-box">
+        <i class="bi bi-search search-icon"></i>
+        <input 
+          type="text" 
+          id="searchInput" 
+          class="search-input" 
+          placeholder="Search topics, tags, or keywords..."
+          aria-label="Search study materials"
+        >
+        <button class="clear-btn" id="clearSearchBtn" aria-label="Clear search">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Content Layout -->
+    <div class="content-layout">
+      <!-- Sidebar Filters -->
+      <aside class="sidebar">
+        <div class="filter-section">
+          <h3 class="filter-title">
+            <i class="bi bi-funnel"></i>
+            Filters
+          </h3>
+
+          <!-- Difficulty Filter -->
+          <div class="filter-group">
+            <h4 class="filter-heading">Difficulty</h4>
+            <label class="filter-checkbox">
+              <input type="checkbox" value="Beginner" data-filter="difficulty">
+              <span>Beginner</span>
+              <span class="count" id="count-beginner">0</span>
+            </label>
+            <label class="filter-checkbox">
+              <input type="checkbox" value="Intermediate" data-filter="difficulty">
+              <span>Intermediate</span>
+              <span class="count" id="count-intermediate">0</span>
+            </label>
+            <label class="filter-checkbox">
+              <input type="checkbox" value="Advanced" data-filter="difficulty">
+              <span>Advanced</span>
+              <span class="count" id="count-advanced">0</span>
+            </label>
+          </div>
+
+          <!-- Category Filter -->
+          <div class="filter-group">
+            <h4 class="filter-heading">Category</h4>
+            <label class="filter-checkbox">
+              <input type="checkbox" value="DSA" data-filter="category">
+              <span>Data Structures & Algorithms</span>
+              <span class="count" id="count-dsa">0</span>
+            </label>
+            <label class="filter-checkbox">
+              <input type="checkbox" value="System Design" data-filter="category">
+              <span>System Design</span>
+              <span class="count" id="count-system">0</span>
+            </label>
+            <label class="filter-checkbox">
+              <input type="checkbox" value="Web Development" data-filter="category">
+              <span>Web Development</span>
+              <span class="count" id="count-web">0</span>
+            </label>
+            <label class="filter-checkbox">
+              <input type="checkbox" value="Database" data-filter="category">
+              <span>Database</span>
+              <span class="count" id="count-database">0</span>
+            </label>
+            <label class="filter-checkbox">
+              <input type="checkbox" value="OOP" data-filter="category">
+              <span>Object-Oriented Programming</span>
+              <span class="count" id="count-oop">0</span>
+            </label>
+          </div>
+
+          <!-- Language Filter -->
+          <div class="filter-group">
+            <h4 class="filter-heading">Language</h4>
+            <label class="filter-checkbox">
+              <input type="checkbox" value="Python" data-filter="language">
+              <span>Python</span>
+              <span class="count" id="count-python">0</span>
+            </label>
+            <label class="filter-checkbox">
+              <input type="checkbox" value="Java" data-filter="language">
+              <span>Java</span>
+              <span class="count" id="count-java">0</span>
+            </label>
+            <label class="filter-checkbox">
+              <input type="checkbox" value="JavaScript" data-filter="language">
+              <span>JavaScript</span>
+              <span class="count" id="count-javascript">0</span>
+            </label>
+            <label class="filter-checkbox">
+              <input type="checkbox" value="C++" data-filter="language">
+              <span>C++</span>
+              <span class="count" id="count-cpp">0</span>
+            </label>
+          </div>
+
+          <!-- Reset Filters -->
+          <button class="reset-btn" id="resetFiltersBtn">
+            <i class="bi bi-arrow-clockwise"></i>
+            Reset Filters
+          </button>
+        </div>
+
+        <!-- Saved Items -->
+        <div class="saved-section">
+          <h3 class="saved-title">
+            <i class="bi bi-bookmark-fill"></i>
+            Saved
+            <span class="saved-count" id="savedCount">0</span>
+          </h3>
+          <button class="view-saved-btn" id="viewSavedBtn">
+            View Saved Items
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Active Filters -->
+        <div class="active-filters" id="activeFilters"></div>
+
+        <!-- Results Count -->
+        <div class="results-info">
+          <span id="resultsCount">Loading...</span>
+        </div>
+
+        <!-- Study Cards Grid -->
+        <div class="cards-grid" id="cardsGrid">
+          <!-- Loading Skeletons -->
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+          <i class="bi bi-inbox"></i>
+          <h3>No materials found</h3>
+          <p>Try adjusting your filters or search terms</p>
+          <button class="reset-btn" onclick="resetAllFilters()">Reset All Filters</button>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-state" id="errorState" style="display: none;">
+          <i class="bi bi-exclamation-triangle"></i>
+          <h3>Failed to load materials</h3>
+          <p>Please check your connection and try again</p>
+          <button class="retry-btn" id="retryBtn">
+            <i class="bi bi-arrow-clockwise"></i>
+            Retry
+          </button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="study-materials.js"></script>
+</body>
+</html>
