@@ -1213,7 +1213,35 @@ main();`
             const langId = document.getElementById('language').value;
             const pistonLang = mapLangIdToPiston(langId);
             const fileName = getFileNameForPiston(langId);
-            const testCases = currentProgram.test_cases;
+
+            function parseTestCases(data) {
+                try {
+                    if (Array.isArray(data)) {
+                        return data;
+                    }
+
+                    if (typeof data === "string") {
+                        if (data.trim().startsWith("[")) {
+                            return JSON.parse(data);
+                        }
+
+                        return data.split(";").map(tc => {
+                            const [input, output] = tc.split("#");
+                            return {
+                                input: input.trim(),
+                                output: output.trim()
+                            };
+                        });
+                    }
+
+                    return [];
+                } catch (err) {
+                    console.error("Test case parsing error:", err);
+                    return [];
+                }
+            }
+
+            const testCases = parseTestCases(currentProgram.test_cases);
 
             let passed = 0;
             let outputLog = "";
@@ -1393,7 +1421,8 @@ main();`
                 </a>
             </div>
             <div class="footer-bottom">
-                <span class="copyright-icon">©</span> 2026 Bhavishyath. All rights reserved. | Built with <span style="color: #ef4444;">❤</span> for coders
+                <span class="copyright-icon">©</span> 2026 Bhavishyath. All rights reserved. | Built with <span
+                    style="color: #ef4444;">❤</span> for coders
             </div>
         </div>
     </footer>
