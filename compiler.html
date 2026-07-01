@@ -22,6 +22,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         /* Header Styles */
@@ -151,13 +152,16 @@
 
         .compiler-container {
             display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            grid-template-rows: auto auto 1fr auto;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+            grid-template-rows: auto auto auto;
             height: auto;
-            min-height: calc(100vh - 80px - 120px);
+            min-height: auto;
             padding: 1.25rem;
             gap: 1.25rem;
             flex: 1;
+            width: 100%;
+            align-items: stretch;
+            overflow-x: hidden;
         }
 
         /* Problem Section */
@@ -168,9 +172,11 @@
             padding: 1.25rem;
             overflow-y: auto;
             grid-column: 1;
-            grid-row: 1 / 3;
+            grid-row: 1;
             height: auto;
-            min-height: 400px;
+            min-height: 320px;
+            max-height: 420px;
+            min-width: 0;
         }
 
         .problem-section h4 {
@@ -184,20 +190,23 @@
             line-height: 1.6;
             margin-bottom: 1rem;
             word-wrap: break-word;
+            overflow-wrap: anywhere;
         }
 
         /* Editor and Controls Section */
         .editor-controls-section {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 4px;
+            padding: 1.25rem;
             display: flex;
             flex-direction: column;
             gap: 1rem;
-            min-height: 0;
-            /* height: auto; */
-            min-height: 300px;
+            min-height: 320px;
+            max-height: 420px;
             grid-column: 2;
-            grid-row: 1 / 3;
-            border: solid red;
-            max-height: 420px !important;
+            grid-row: 1;
+            min-width: 0;
         }
 
         .editor-wrapper {
@@ -207,6 +216,7 @@
             gap: 0.75rem;
             min-width: 0;
             min-height: 0;
+            height: 100%;
         }
 
         .editor-label {
@@ -220,7 +230,9 @@
             border: 1px solid #555;
             border-radius: 4px;
             overflow: hidden;
-            min-height: 300px;
+            min-height: 320px;
+            height: clamp(320px, 42vh, 420px);
+            width: 100%;
         }
 
         /* Output Section */
@@ -229,7 +241,7 @@
             border-top: 1px solid #3e3e42;
             padding-top: 1rem;
             grid-column: 1 / -1;
-            grid-row: 3;
+            grid-row: 2;
             display: flex;
             flex-direction: column;
         }
@@ -305,7 +317,7 @@
             display: flex;
             flex-direction: column;
             grid-column: 1 / -1;
-            grid-row: 4;
+            grid-row: 3;
             position: relative;
             border-bottom: 8px solid #3c3c3c;
         }
@@ -466,7 +478,7 @@
         @media (max-width: 1024px) {
             .compiler-container {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto auto 1fr auto auto;
+                grid-template-rows: auto auto auto auto;
             }
 
             .problem-section {
@@ -478,17 +490,16 @@
             .editor-controls-section {
                 grid-column: 1;
                 grid-row: 2;
-                /* height: auto; */
             }
 
             .output-section {
                 grid-column: 1;
-                grid-row: 4;
+                grid-row: 3;
             }
 
             .solutions-section {
                 grid-column: 1;
-                grid-row: 5;
+                grid-row: 4;
                 height: 400px;
                 max-height: none;
                 min-height: 200px;
@@ -535,7 +546,7 @@
                 padding: 0.75rem;
                 gap: 0.75rem;
                 grid-template-columns: 1fr;
-                grid-template-rows: auto auto 1fr auto auto;
+                grid-template-rows: auto auto auto auto;
             }
 
             .problem-section {
@@ -556,7 +567,8 @@
 
             .editor-controls-section {
                 flex-direction: column;
-                height: 30vh;
+                min-height: 280px;
+                max-height: none;
             }
 
             .editor-wrapper {
@@ -780,11 +792,11 @@
             <div class="language-selector-header">
                 <label for="language">Language:</label>
                 <select id="language">
-                    <option value="54">C++</option>
-                    <option value="50">C</option>
-                    <option value="62">Java</option>
-                    <option value="71">Python</option>
-                    <option value="63">JavaScript</option>
+                    <option value="gcc-13.2.0">C++</option>
+                    <option value="gcc-13.2.0-c">C</option>
+                    <option value="openjdk-jdk-21+35">Java</option>
+                    <option value="cpython-3.13.8">Python</option>
+                    <option value="nodejs-20.17.0">JavaScript</option>
                 </select>
             </div>
             <button class="run-btn btn-save" onclick="saveCode()" title="Save code (Ctrl+S)">
@@ -898,6 +910,40 @@ if __name__ == "__main__":
     // write code here
 }
 
+main();`,
+            'gcc-13.2.0-c': `#include <stdio.h>
+
+int main() {
+    // write code here
+
+    return 0;
+}`,
+            'gcc-13.2.0': `#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    // write code here
+
+    return 0;
+}`,
+            'openjdk-jdk-21+35': `import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // write code here
+
+    }
+}`,
+            'cpython-3.13.8': `def main():
+    # write code here
+    pass
+
+if __name__ == "__main__":
+    main()`,
+            'nodejs-20.17.0': `function main() {
+    // write code here
+}
+
 main();`
         };
 
@@ -943,16 +989,16 @@ main();`
             window.location.href = "user-login.html";
         }
 
-        // Map database language numbers to Piston API language IDs
-        function convertDatabaseLangToPiston(dbLang) {
+        // Map database language numbers to compiler ids used by the execution backend
+        function convertDatabaseLangToCompiler(dbLang) {
             const mapping = {
-                '1': '54',   // C++
-                '2': '62',   // Java
-                '3': '71',   // Python
-                '4': '50',   // C
-                '5': '63'    // JavaScript
+                '1': 'gcc-13.2.0',      // C++
+                '2': 'openjdk-jdk-21+35', // Java
+                '3': 'cpython-3.13.8',  // Python
+                '4': 'gcc-13.2.0-c',    // C
+                '5': 'nodejs-20.17.0'   // JavaScript
             };
-            return mapping[String(dbLang)] || '54'; // Default to C++
+            return mapping[String(dbLang)] || 'gcc-13.2.0'; // Default to C++
         }
 
         // Load problem from Supabase first
@@ -971,8 +1017,8 @@ main();`
 
             // Convert database language format to Piston API format
             const dbLang = data.language_id || data.language || "3";
-            const problemLang = convertDatabaseLangToPiston(dbLang);
-            console.log("Database language:", dbLang, "Converting to Piston format:", problemLang);
+            const problemLang = convertDatabaseLangToCompiler(dbLang);
+            console.log("Database language:", dbLang, "Converting to backend compiler:", problemLang);
 
             document.getElementById("language").value = problemLang;
             localStorage.setItem("selected_language", problemLang);
@@ -1056,7 +1102,12 @@ main();`
                 '54': 4,   // C++
                 '62': 4,   // Java
                 '71': 2,   // Python
-                '63': 2    // JavaScript
+                '63': 2,   // JavaScript
+                'gcc-13.2.0-c': 4,
+                'gcc-13.2.0': 4,
+                'openjdk-jdk-21+35': 4,
+                'cpython-3.13.8': 2,
+                'nodejs-20.17.0': 2
             };
             return editableLines[langId] || 4;
         }
@@ -1068,31 +1119,40 @@ main();`
                 '54': 'cpp',
                 '62': 'java',
                 '71': 'python',
-                '63': 'javascript'
+                '63': 'javascript',
+                'gcc-13.2.0-c': 'c',
+                'gcc-13.2.0': 'cpp',
+                'openjdk-jdk-21+35': 'java',
+                'cpython-3.13.8': 'python',
+                'nodejs-20.17.0': 'javascript'
             };
             return mapping[id] || 'cpp';
         }
 
-        function mapLangIdToPiston(id) {
+        function mapLangIdToCompiler(id) {
             const mapping = {
-                '50': 'c',
-                '54': 'cpp',
-                '62': 'java',
-                '71': 'python',
-                '63': 'javascript'
+                '50': 'gcc-13.2.0-c',
+                '54': 'gcc-13.2.0',
+                '62': 'openjdk-jdk-21+35',
+                '71': 'cpython-3.13.8',
+                '63': 'nodejs-20.17.0',
+                'gcc-13.2.0-c': 'gcc-13.2.0-c',
+                'gcc-13.2.0': 'gcc-13.2.0',
+                'openjdk-jdk-21+35': 'openjdk-jdk-21+35',
+                'cpython-3.13.8': 'cpython-3.13.8',
+                'nodejs-20.17.0': 'nodejs-20.17.0'
             };
-            return mapping[id] || 'cpp';
+            return mapping[id] || 'gcc-13.2.0';
         }
 
-        function getFileNameForPiston(id) {
-            const mapping = {
-                '50': 'main.c',
-                '54': 'main.cpp',
-                '62': 'Main.java',
-                '71': 'main.py',
-                '63': 'main.js'
-            };
-            return mapping[id] || 'main.cpp';
+        async function readJsonResponse(response) {
+            const text = await response.text();
+
+            try {
+                return JSON.parse(text);
+            } catch (parseError) {
+                throw new Error(text.trim() || `Unexpected response from server (HTTP ${response.status})`);
+            }
         }
 
         // Load problem and initialize editor
@@ -1211,8 +1271,7 @@ main();`
             runBtn.disabled = true;
 
             const langId = document.getElementById('language').value;
-            const pistonLang = mapLangIdToPiston(langId);
-            const fileName = getFileNameForPiston(langId);
+            const compiler = mapLangIdToCompiler(langId);
 
             function parseTestCases(data) {
                 try {
@@ -1243,39 +1302,62 @@ main();`
 
             const testCases = parseTestCases(currentProgram.test_cases);
 
+            if (
+                (String(langId) === '71' || String(langId) === 'cpython-3.13.8') &&
+                /int\s*\(\s*input\s*\(\s*\)\s*\)/.test(code) &&
+                testCases.some(test => /\s/.test(String(test.input || '').trim()))
+            ) {
+                const warning =
+                    'Your Python code is reading one integer at a time with int(input()), but these tests provide multiple values on the same line. Use input().split() for space-separated input, for example: a, b = map(int, input().split()).';
+                document.getElementById('output').innerText = warning;
+                document.getElementById('errors').innerText = warning;
+                window.switchTab('errors');
+                runBtn.classList.remove('loading');
+                runBtn.disabled = false;
+                return;
+            }
+
             let passed = 0;
             let outputLog = "";
             let errorLog = "";
 
             for (const [index, test] of testCases.entries()) {
                 try {
-                    const res = await fetch("https://emkc.org/api/v2/piston/execute", {
+                    const res = await fetch("https://wandbox.org/api/compile.json", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
-                            language: pistonLang,
-                            version: "*",
-                            files: [{ name: fileName, content: code }],
-                            stdin: test.input
+                            compiler,
+                            code,
+                            codes: [],
+                            options: "",
+                            stdin: test.input,
+                            "compiler-option-raw": "",
+                            "runtime-option-raw": "",
+                            github_user: "",
+                            title: currentProgram.title || "",
+                            description: currentProgram.description || "",
+                            save: false,
+                            created_at: 0,
+                            is_private: false
                         })
                     });
 
-                    const result = await res.json();
-                    const execution = result.run || result.compile || result;
+                    const result = await readJsonResponse(res);
 
                     if (!res.ok) {
                         const apiMessage = result.message || result.error || `HTTP ${res.status}`;
                         throw new Error(apiMessage);
                     }
 
-                    if (!execution || (typeof execution.stdout === "undefined" && typeof execution.stderr === "undefined")) {
-                        const apiMessage = result.message || result.error || "Execution failed without a run result";
-                        throw new Error(apiMessage);
-                    }
-
-                    const actualOutput = (execution.stdout || "").trim();
+                    const actualOutput = (result.program_output || "").trim();
                     const expectedOutput = (test.output || "").trim();
-                    const errors = (execution.stderr || "").trim();
+                    const errors = [result.compiler_error, result.program_error]
+                        .filter(Boolean)
+                        .join("\n")
+                        .trim();
+                    const runtimeStatus = String(result.status || "");
+                    const runtimeSignal = String(result.signal || "");
 
                     outputLog += `\n--- Test Case ${index + 1} ---\n` +
                         `Input:\n${test.input}\n` +
@@ -1284,7 +1366,9 @@ main();`
                         `Result: ${actualOutput === expectedOutput ? "✅ PASSED" : "❌ FAILED"}\n`;
 
                     if (actualOutput === expectedOutput) passed++;
-                    if (errors) errorLog += `Test ${index + 1} Errors:\n${errors}\n\n`;
+                    if (runtimeStatus !== "0" || runtimeSignal || errors) {
+                        errorLog += `Test ${index + 1} Runtime Error:\n${[runtimeStatus !== "0" ? `Status: ${runtimeStatus}` : "", runtimeSignal ? `Signal: ${runtimeSignal}` : "", errors].filter(Boolean).join("\n")}\n\n`;
+                    }
 
                 } catch (err) {
                     errorLog += `Test ${index + 1} Runtime Error: ${err.message}\n\n`;
