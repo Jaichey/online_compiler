@@ -1261,9 +1261,21 @@ main();`
                     });
 
                     const result = await res.json();
-                    const actualOutput = (result.run.stdout || "").trim();
+                    const execution = result.run || result.compile || result;
+
+                    if (!res.ok) {
+                        const apiMessage = result.message || result.error || `HTTP ${res.status}`;
+                        throw new Error(apiMessage);
+                    }
+
+                    if (!execution || (typeof execution.stdout === "undefined" && typeof execution.stderr === "undefined")) {
+                        const apiMessage = result.message || result.error || "Execution failed without a run result";
+                        throw new Error(apiMessage);
+                    }
+
+                    const actualOutput = (execution.stdout || "").trim();
                     const expectedOutput = (test.output || "").trim();
-                    const errors = (result.run.stderr || "").trim();
+                    const errors = (execution.stderr || "").trim();
 
                     outputLog += `\n--- Test Case ${index + 1} ---\n` +
                         `Input:\n${test.input}\n` +
